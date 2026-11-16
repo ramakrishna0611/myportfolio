@@ -112,6 +112,8 @@ function buildNetwork(scene, small) {
 
 /* ---------------- component ---------------- */
 
+const WIDE = ['sieve', 'away', 'hr-rag']
+
 export default function Brain({ onNode, lobeAnchors, labelRefs }) {
   const canvasRef = useRef(null)
 
@@ -131,8 +133,9 @@ export default function Brain({ onNode, lobeAnchors, labelRefs }) {
 
     // studio lighting for the brain
     scene.add(new THREE.HemisphereLight(0xfff1ea, 0x1a1418, 0.7))
-    const key = new THREE.DirectionalLight(0xffe2d6, 3); key.position.set(4, 6, 8); scene.add(key)
-    const rim = new THREE.DirectionalLight(0x8fa8ff, 1.6); rim.position.set(-6, 2, -6); scene.add(rim)
+    const key = new THREE.DirectionalLight(0xf3e9ff, 2.2); key.position.set(4, 6, 8); scene.add(key)
+    const rim = new THREE.DirectionalLight(0x74d8c4, 4.5); rim.position.set(-6, 2, -6); scene.add(rim)
+    const rim2 = new THREE.DirectionalLight(0xe88a98, 2.2); rim2.position.set(7, -1, -5); scene.add(rim2)
     const fill = new THREE.DirectionalLight(0xffffff, 0.4); fill.position.set(-4, -3, 6); scene.add(fill)
 
     const net = buildNetwork(scene, small)
@@ -147,7 +150,7 @@ export default function Brain({ onNode, lobeAnchors, labelRefs }) {
       model.position.sub(center).multiplyScalar(s); model.scale.setScalar(s)
       model.traverse(o => {
         if (!o.isMesh) return
-        const m = new THREE.MeshPhysicalMaterial({ vertexColors: !!o.geometry.attributes.color, color: o.geometry.attributes.color ? 0xffffff : 0xd9928c, roughness: 0.42, clearcoat: 0.35, clearcoatRoughness: 0.5, sheen: 0.4, sheenColor: new THREE.Color(0xffb9b0), transparent: true })
+        const m = new THREE.MeshPhysicalMaterial({ color: 0x4a3a46, roughness: 0.32, metalness: 0.05, clearcoat: 1, clearcoatRoughness: 0.28, sheen: 1, sheenRoughness: 0.35, sheenColor: new THREE.Color(0x74d8c4), transparent: true })
         o.material = m; brainMats.push(m)
       })
       brainRoot.add(model)
@@ -160,11 +163,11 @@ export default function Brain({ onNode, lobeAnchors, labelRefs }) {
         if (!o.isMesh) return
         const pos = o.geometry.attributes.position
         for (let i = 0; i < pos.count; i += 7) {
-          v.fromBufferAttribute(pos, i).applyMatrix4(o.matrixWorld)
+          brainRoot.worldToLocal(v.fromBufferAttribute(pos, i).applyMatrix4(o.matrixWorld)) // in the brain's own space, whatever its current turn
           dirs.forEach((d, k) => { const sc = v.dot(d); if (sc > best[k].score) { best[k].score = sc; best[k].p.copy(v) } })
         }
       })
-      anchors = best.map(b => brainRoot.worldToLocal(b.p.clone()))
+      anchors = best.map(b => b.p.clone())
     })
 
     // ---------- scroll timeline, read from the page's sections ----------
@@ -192,7 +195,7 @@ export default function Brain({ onNode, lobeAnchors, labelRefs }) {
       outPos.copy(p).addScaledVector(tan, -5.8).addScaledVector(up, 1.7).addScaledVector(side, 1.5)
       outLook.copy(net.path.getPoint(clamp(t + 0.015)))
     }
-    let tCur = 0, lastNode = -2, frame = 0, offX = 0, offY = 0, rot = 0, zCur = heroCam.z
+    let tCur = 0, lastNode = -2, frame = 0, offX = 0, offY = 0, rot = Math.PI / 2 - 0.65, zCur = heroCam.z
     const startPos = new THREE.Vector3(), startLook = new THREE.Vector3()
     pathPose(0, startPos, startLook)
     const K = nodes.length
@@ -207,7 +210,7 @@ export default function Brain({ onNode, lobeAnchors, labelRefs }) {
       const px = Math.max(110, Math.min(bottom - top, maxW / aspect, vh * 0.6))
       // the brain's height on screen is roughly K / z of the viewport height (K measured at fov 35)
       const K = 8.8 * Math.tan(THREE.MathUtils.degToRad(17.5)) / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2))
-      return { z: Math.min(32, Math.max(8, K * vh / px)), ty: -((top + bottom) / 2 - vh / 2) / vh }
+      return { z: Math.min(32, Math.max(8, K * vh / (px * 1.3))), ty: -((top + bottom) / 2 - vh / 2) / vh }
     }
 
     const loop = now => {
@@ -224,10 +227,10 @@ export default function Brain({ onNode, lobeAnchors, labelRefs }) {
       tCur += (tTarget - tCur) * 0.09
 
       // brain: rotates in the opening, swells and dissolves as we dive in
-      // free spin on the cover; side-on and nearly still while the lobe labels are up
+      // three-quarter view rocking gently on the cover; side-on and nearly still while the lobe labels are up
       const SIDE = Math.PI / 2
-      if (headP < 0.05 && diveP <= 0) rot += 0.0035
-      else { const target = SIDE + (headP - 0.5) * 0.35, near = target + Math.PI * 2 * Math.round((rot - target) / (Math.PI * 2)); rot += (near - rot) * 0.05 }
+      const target = headP < 0.05 && diveP <= 0 ? SIDE - 0.65 + Math.sin(now * 0.0005) * 0.3 : SIDE + (headP - 0.5) * 0.35
+      rot += (target - rot) * 0.05
       brainRoot.rotation.set(0.12, rot, 0)
       const dissolve = clamp((diveP - 0.3) / 0.5)
       brainRoot.scale.setScalar(1 + ease(clamp(diveP / 0.85)) * 1.6)
@@ -266,7 +269,7 @@ export default function Brain({ onNode, lobeAnchors, labelRefs }) {
       camera.lookAt(look)
 
       // shift the picture: brain centred under the copy, centred between the lobe labels, then left of the info panel
-      const tx = w < 768 || diveP <= 0 ? 0 : diveP < 0.5 ? 0.16 : 0.14
+      const tx = w < 768 || diveP <= 0 ? 0 : diveP < 0.5 ? 0.16 : w >= 1024 && WIDE.includes(nodes[node]?.id) ? 0.24 : 0.14
       const ty = box ? box.ty : w < 768 ? 0.2 : 0
       offX += (tx - offX) * 0.06; offY += (ty - offY) * 0.06
       camera.setViewOffset(w, vh, w * offX, vh * offY, w, vh)

@@ -51,6 +51,31 @@ const LobeLabel = ({ l, small, ref }) => (
   </li>
 )
 
+/* Jump straight to any neuron: lands where that node's panel opens */
+function JumpNav({ active }) {
+  const jump = id => {
+    const el = document.getElementById(`n-${id}`); if (!el) return
+    const top = el.getBoundingClientRect().top + window.scrollY + el.offsetHeight * 0.5 - window.innerHeight * 0.5
+    window.scrollTo({ top, behavior: 'smooth' })
+  }
+  return (
+    <nav aria-label="Jump to a section" className="fixed z-40 max-md:z-[55] max-md:inset-x-0 max-md:top-[64px] max-md:flex max-md:justify-center max-md:gap-1 md:left-4 md:top-1/2 md:-translate-y-1/2 md:space-y-1">
+      {nodes.map((n, i) => {
+        const on = i === active
+        return (
+          <button key={n.id} onClick={() => jump(n.id)} aria-label={`Go to ${n.label}`} aria-current={on ? 'step' : undefined}
+            className="group flex items-center gap-2 px-1 py-1 font-mono text-[10.5px] md:py-1.5">
+            <span className={`h-2 w-2 rounded-full border transition ${on ? 'border-[#74d8c4] bg-[#74d8c4] shadow-[0_0_10px_#74d8c4]' : i < active ? 'border-[#74d8c4]/60 bg-[#74d8c4]/30' : 'border-ink/40 bg-transparent group-hover:border-ink'}`} />
+            <span className={`hidden whitespace-nowrap transition md:inline ${on ? 'text-[#74d8c4] opacity-100' : 'text-ink/70 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100'}`}>
+              {String(i + 1).padStart(2, '0')} {n.label}
+            </span>
+          </button>
+        )
+      })}
+    </nav>
+  )
+}
+
 export default function App() {
   const [plain, setPlain] = useState(false)
   const [active, setActive] = useState(-1)
@@ -83,7 +108,7 @@ export default function App() {
           <h2 className="font-serif text-[clamp(2.4rem,5vw,4rem)] font-normal leading-none tracking-[-0.02em]">Inside my head</h2>
           <p className="mt-2 text-[15px] text-ink/70">Everything I learn has a place. Keep scrolling and we go in.</p>
         </div>
-        {[[0, 1], [2, 3]].map((pair, side) => (
+        {[[0, 2], [1, 3]].map((pair, side) => ( // front-facing lobes on the left, top and back on the right
           <ol key={side} id={side ? 'lobe-r' : 'lobe-l'} className={`absolute top-1/2 hidden w-[min(300px,26vw)] -translate-y-1/2 space-y-14 md:block ${side ? 'right-[max(2.5rem,calc((100vw-80rem)/2+2.5rem))]' : 'left-[max(2.5rem,calc((100vw-80rem)/2+2.5rem))] text-right'}`}>
             {pair.map(i => <LobeLabel key={i} l={lobes[i]} ref={el => (lobeLabels.current[i] = el)} />)}
           </ol>
@@ -103,7 +128,7 @@ export default function App() {
             </motion.h1>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45, duration: 0.8 }}>
               <p className="mx-auto mt-5 max-w-[620px] text-[16.5px] [@media(max-height:760px)]:mt-3 [@media(max-height:760px)]:text-[15px] leading-relaxed text-ink/75">
-                I’m {profile.name}, an AI Engineer at Accelerize360 building LLM agents and RAG systems. The model can propose. My code decides. The numbers prove it.
+                I’m {profile.name}, an AI Engineer at Accelerize360 building LLM agents and RAG systems. The model can propose. My code decides.
               </p>
               <div className="mt-7 flex flex-wrap items-center justify-center gap-6 [@media(max-height:760px)]:mt-5">
                 <ArrowButton href="#head">Look inside my head</ArrowButton>
@@ -139,6 +164,7 @@ export default function App() {
         </footer>
       </main>
 
+      <JumpNav active={active} />
       <NodePanel active={active} />
       <PlainCV open={plain} onClose={() => setPlain(false)} />
     </div>

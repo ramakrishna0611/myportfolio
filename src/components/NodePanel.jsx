@@ -84,7 +84,8 @@ const Pill = ({ children, className }) => (
 function Project({ p }) {
   const [copied, setCopied] = useState(null)
   return (
-    <article className="rounded-xl border border-line bg-white/[0.02] p-3">
+    <article className="rounded-xl border border-line bg-white/[0.02] p-3 lg:grid lg:grid-cols-[1.15fr_1fr] lg:gap-6">
+      <div>
       <div className="relative overflow-hidden rounded-lg border border-line bg-[repeating-linear-gradient(135deg,rgba(232,228,218,.035)_0_1px,transparent_1px_7px)] pl-8 pt-11">
         <div className="absolute inset-x-3 top-3 flex justify-between">
           <Pill className={p.live ? 'border-[#74d8c4]/30 bg-[#74d8c4]/10 text-[#74d8c4]' : 'border-line bg-ink/5 text-ink/60'}>
@@ -113,8 +114,12 @@ function Project({ p }) {
         </div>
         <p className="mt-0.5 font-mono text-[11px] text-[#74d8c4]">{p.kind}</p>
         <p className="mt-2.5 text-[13.5px] leading-[1.6] text-ink/70">{p.tagline}</p>
+      </div>
+      </div>
 
-        <h4 className="mt-5 font-mono text-[11px] uppercase tracking-[0.12em] text-muted">How to use it</h4>
+      {/* on wide screens the how-to sits beside the clip, so nothing hides below the fold */}
+      <div className="px-1.5 pb-1.5 lg:pt-1">
+        <h4 className="mt-5 font-mono lg:mt-0 text-[11px] uppercase tracking-[0.12em] text-muted">How to use it</h4>
         <ol className="mt-2 space-y-2">
           {p.use.map((step, i) => (
             <li key={i} className="grid grid-cols-[22px_1fr] gap-1.5 text-[13.5px] leading-snug text-ink/80">
@@ -190,7 +195,7 @@ export default function NodePanel({ active }) {
   const project = n && projects.find(p => p.id === n.id)
   const Body = n && BODY[n.id]
   return (
-    <div className="pointer-events-none fixed inset-x-3 bottom-3 z-30 md:inset-x-auto md:bottom-auto md:right-[max(2rem,calc((100vw-80rem)/2+2rem))] md:top-[96px] md:w-[440px]">
+    <div className={`pointer-events-none fixed inset-x-3 bottom-3 z-30 md:inset-x-auto md:bottom-auto md:right-[max(2rem,calc((100vw-80rem)/2+2rem))] md:top-[96px] md:w-[440px] ${project ? 'lg:w-[min(860px,calc(100vw-7rem))]' : ''}`}>
       <AnimatePresence mode="wait">
         {n && (
           <motion.aside key={n.id} aria-live="polite" aria-label={n.label}
