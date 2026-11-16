@@ -52,23 +52,23 @@ function HoloFrame({ url, children }) {
   )
 }
 
+/* Architecture steps stacked top to bottom, with light packets travelling between them. */
 function Flow({ steps }) {
   return (
-    <div className="flex flex-col items-stretch min-[900px]:flex-row">
+    <div className="flex flex-col items-stretch">
       {steps.map((s, i) => (
         <div key={i} className="contents">
           {i > 0 && (
-            <div aria-hidden="true" className="relative mx-auto h-8 w-2 min-[900px]:mx-0 min-[900px]:h-2 min-[900px]:w-9 min-[900px]:self-center">
-              <div className="absolute inset-0 m-auto h-full w-[2px] bg-gradient-to-b from-cyan/60 to-violet/60 min-[900px]:h-[2px] min-[900px]:w-full min-[900px]:bg-gradient-to-r" />
+            <div aria-hidden="true" className="relative ml-7 h-8 w-2">
+              <div className="absolute inset-0 mx-auto h-full w-[2px] bg-gradient-to-b from-cyan/60 to-violet/60" />
               <span className="packet absolute left-0 top-0 h-2 w-2 rounded-full" style={{ background: KIND[s.kind].dot, boxShadow: `0 0 10px 2px ${KIND[s.kind].dot}`, animationDelay: `${i * -0.3}s` }} />
             </div>
           )}
           <motion.div
-            initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-            className="flex-1 rounded-2xl border border-line bg-black/30 p-4 min-[900px]:min-w-0">
-            <span className={`inline-block rounded-md border px-2 py-0.5 font-mono text-[10.5px] font-semibold uppercase tracking-wider ${KIND[s.kind].cls}`}>{KIND[s.kind].tag}</span>
-            <div className="mt-2 font-display text-base font-bold leading-tight">{s.title}</div>
-            <div className="mt-1 text-[13px] leading-snug text-muted">{s.text}</div>
+            initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}
+            className="flex items-start gap-3 rounded-2xl border border-line bg-black/30 p-4">
+            <span className={`mt-0.5 shrink-0 rounded-md border px-2 py-0.5 font-mono text-[10.5px] font-semibold uppercase tracking-wider ${KIND[s.kind].cls}`}>{KIND[s.kind].tag}</span>
+            <div><div className="font-display text-base font-bold leading-tight">{s.title}</div><div className="mt-1 text-[13px] leading-snug text-muted">{s.text}</div></div>
           </motion.div>
         </div>
       ))}
@@ -137,97 +137,55 @@ function CopyLogin({ login }) {
   )
 }
 
-function ProjectCard({ p, i }) {
-  const [open, setOpen] = useState(false)
+/* Full story of one project, shown in its map panel. */
+export function ProjectBody({ p }) {
   return (
-    <Reveal as="article">
-      <div id={p.id} onMouseMove={spotlight} className="glass spot scroll-mt-24 rounded-[2rem] p-5 sm:p-8">
-        <div className="flex flex-wrap items-start gap-4">
-          <div className="min-w-0 flex-1 basis-80">
-            <div className="flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
-              <span className="text-cyan">Module {String(i + 1).padStart(2, '0')}</span><span>·</span><span>{p.kind}</span>
-              {p.live
-                ? <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2 py-0.5 font-semibold normal-case tracking-normal text-emerald-300"><i className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />Live</span>
-                : <span className="rounded-full border border-line px-2 py-0.5 font-semibold normal-case tracking-normal text-ink/80">Open source</span>}
-            </div>
-            <h3 className="mt-2 font-display text-3xl font-bold tracking-tight sm:text-4xl">{p.name}</h3>
-            <p className="mt-2 text-lg text-ink/90">{p.tagline}</p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {p.live && <Button href={p.live} variant="primary"><Icon.play />Live demo</Button>}
-            <Button href={p.code}><Icon.github />Code</Button>
-          </div>
-        </div>
-
-        <div className="mt-7 grid gap-8 lg:grid-cols-[1fr_1.15fr]">
-          <div className="min-w-0">
-            <p className="leading-relaxed text-muted">{p.summary}</p>
-            <div className="mt-6 grid grid-cols-2 gap-3">
-              {p.metrics.map(m => (
-                <div key={m.label} className="rounded-2xl border border-line bg-black/30 p-4">
-                  <div className="font-display text-2xl font-bold tracking-tight text-cyan sm:text-3xl">{m.value}</div>
-                  <div className="mt-1 text-[13px] leading-snug text-muted">{m.label}</div>
-                </div>
-              ))}
-            </div>
-            <div className="mt-5 flex flex-wrap gap-1.5">
-              {p.stack.map(s => <span key={s} className="rounded-full border border-line bg-white/[.03] px-2.5 py-0.5 font-mono text-[11.5px] text-muted">{s}</span>)}
-            </div>
-          </div>
-          <div className="min-w-0 space-y-4">
-            {p.video ? (
-              <>
-                <HoloFrame url={p.live.replace('https://', '')}><DemoVideo src={p.video} poster={p.poster} label={`Screen recording of ${p.name}`} /></HoloFrame>
-                <p className="text-sm text-muted">{p.caption}</p>
-                <CopyLogin login={p.login} />
-              </>
-            ) : (
-              <div className="hud rounded-2xl border border-line bg-black/30 p-5"><Corners /><Bars bars={p.bars} /></div>
-            )}
-          </div>
-        </div>
-
-        <div className="mt-8 border-t border-line pt-6">
-          <button onClick={() => setOpen(o => !o)} aria-expanded={open}
-            className="inline-flex items-center gap-2 rounded-full border border-cyan/50 bg-cyan/10 px-4 py-2 text-sm font-semibold text-cyan transition hover:bg-cyan/20 hover:shadow-[0_0_20px_rgba(77,225,255,.3)]">
-            <motion.span animate={{ rotate: open ? 90 : 0 }}><Icon.arrow /></motion.span>
-            {open ? 'Hide how it works' : 'How it works · architecture'}
-          </button>
-          <AnimatePresence initial={false}>
-            {open && (
-              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }} className="overflow-hidden">
-                <div className="pb-3 pt-6">
-                  <div className="mb-4 flex flex-wrap gap-2 text-xs text-muted">
-                    {[...new Set(p.flow.map(s => s.kind))].map(k => <span key={k} className={`rounded-md border px-2 py-0.5 font-mono font-semibold ${KIND[k].cls}`}>{KIND[k].tag}</span>)}
-                    <span className="self-center">· glowing packets show data moving through the system</span>
-                  </div>
-                  <Flow steps={p.flow} />
-                  <div className="mt-6 grid gap-6 lg:grid-cols-2">
-                    <div className="min-w-0">
-                      {p.extra?.type === 'rubric' && <Rubric extra={p.extra} />}
-                      {p.extra?.type === 'note' && (<><h4 className="font-display text-lg font-bold">{p.extra.title}</h4><p className="mt-2 leading-relaxed text-muted">{p.extra.note}</p></>)}
-                      {!p.extra && <><h4 className="font-display text-lg font-bold">Why hybrid search</h4><p className="mt-2 leading-relaxed text-muted">Embeddings miss exact terms like “PTO” or “183 days”; BM25 catches them. Fusing both and reranking with a cross-encoder put the right answer in the top 4 for 92.9% of questions.</p></>}
-                    </div>
-                    <CodeWindow className="min-w-0" file={p.snippet.file} note="simplified from the repo" code={p.snippet.code} />
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+    <div className="space-y-7">
+      <div className="flex flex-wrap items-center gap-2">
+        {p.live
+          ? <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-300"><i className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />Live</span>
+          : <span className="rounded-full border border-line px-2.5 py-0.5 text-xs font-semibold text-ink/80">Open source</span>}
+        <span className="font-mono text-xs text-muted">{p.kind}</span>
+        <div className="ml-auto flex gap-2">
+          {p.live && <Button href={p.live} variant="primary" className="!px-4 !py-2"><Icon.play />Live demo</Button>}
+          <Button href={p.code} className="!px-4 !py-2"><Icon.github />Code</Button>
         </div>
       </div>
-    </Reveal>
-  )
-}
+      <p className="text-lg text-ink">{p.tagline}</p>
 
-export default function Projects() {
-  return (
-    <section id="projects" className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-      <SectionHeader n={4} code="station modules" title="Projects" sub="Built from scratch. Every number comes from the project’s own tests or evaluation run." />
-      <div className="space-y-8">
-        {projects.map((p, i) => <ProjectCard key={p.id} p={p} i={i} />)}
+      {p.video
+        ? (<div className="space-y-3">
+            <HoloFrame url={p.live.replace('https://', '')}><DemoVideo src={p.video} poster={p.poster} label={`Screen recording of ${p.name}`} /></HoloFrame>
+            <p className="text-sm text-muted">{p.caption}</p>
+          </div>)
+        : <div className="hud rounded-2xl border border-line bg-black/30 p-5"><Corners /><Bars bars={p.bars} /></div>}
+
+      <p className="leading-relaxed text-muted">{p.summary}</p>
+      <div className="grid grid-cols-2 gap-3">
+        {p.metrics.map(m => (
+          <div key={m.label} className="rounded-2xl border border-line bg-black/30 p-4">
+            <div className="font-display text-2xl font-bold tracking-tight text-cyan">{m.value}</div>
+            <div className="mt-1 text-[13px] leading-snug text-muted">{m.label}</div>
+          </div>
+        ))}
       </div>
-    </section>
+      {p.login && <CopyLogin login={p.login} />}
+
+      <div>
+        <h4 className="mb-3 font-display text-lg font-bold">How it works</h4>
+        <div className="mb-4 flex flex-wrap gap-2 text-xs text-muted">
+          {[...new Set(p.flow.map(s => s.kind))].map(k => <span key={k} className={`rounded-md border px-2 py-0.5 font-mono font-semibold ${KIND[k].cls}`}>{KIND[k].tag}</span>)}
+          <span className="self-center">· glowing packets show data moving through the system</span>
+        </div>
+        <Flow steps={p.flow} />
+      </div>
+      {p.extra?.type === 'rubric' && <Rubric extra={p.extra} />}
+      {p.extra?.type === 'note' && (<div><h4 className="font-display text-lg font-bold">{p.extra.title}</h4><p className="mt-2 leading-relaxed text-muted">{p.extra.note}</p></div>)}
+      {!p.extra && <div><h4 className="font-display text-lg font-bold">Why hybrid search</h4><p className="mt-2 leading-relaxed text-muted">Embeddings miss exact terms like “PTO” or “183 days”; BM25 catches them. Fusing both and reranking with a cross-encoder put the right answer in the top 4 for 92.9% of questions.</p></div>}
+      <CodeWindow file={p.snippet.file} note="simplified from the repo" code={p.snippet.code} />
+      <div className="flex flex-wrap gap-1.5">
+        {p.stack.map(s => <span key={s} className="rounded-full border border-line bg-white/[.03] px-2.5 py-0.5 font-mono text-[11.5px] text-muted">{s}</span>)}
+      </div>
+    </div>
   )
 }
