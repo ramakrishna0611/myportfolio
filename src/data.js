@@ -218,11 +218,11 @@ export const mind = [
 ]
 
 export const journey = [
-  { id: 'cbit', pin: 'CBIT, Hyderabad', title: 'B.E. Computer Science (AI & ML), 2021 to 2025', place: 'Chaitanya Bharathi Institute of Technology', note: 'GPA 8.85 / 10' },
-  { id: 'a360', pin: 'Accelerize360', title: 'Software Developer (Agentforce and AI), Jan 2025', place: 'Accelerize360, Hyderabad', note: 'AI agents, RAG and agent-assist in production' },
-  { id: 'certs', pin: 'Certified', title: 'Agentforce Specialist · Claude Architect Foundations', place: 'Certifications', note: null },
-  { id: 'hr-rag', pin: 'HR Policy RAG', title: 'Built an HR Policy Assistant (RAG)', place: 'Hybrid search, reranking, cited answers', note: 'Answer found in the top 4 for 92.9% of questions' },
-  { id: 'away', pin: 'Away', title: 'Built Away, an AI leave agent', place: '13 tools, every rule enforced in code', note: '0 unsafe writes across 8 attacks' },
-  { id: 'sieve', pin: 'Sieve', title: 'Built Sieve, AI resume screening', place: 'Evidence-based scoring, Gmail intake', note: 'Right candidate ranked #1 on 5 of 5 jobs' },
-  { id: 'next', pin: 'Next', title: 'Next: your team', place: 'No map for this one yet.', note: null },
+  { id: 'cbit', kind: 'Education', link: null, pin: 'CBIT, Hyderabad', title: 'B.E. Computer Science (AI & ML), 2021 to 2025', place: 'Chaitanya Bharathi Institute of Technology', note: 'GPA 8.85 / 10' },
+  { id: 'a360', kind: 'Work', link: '#experience', pin: 'Accelerize360', title: 'Software Developer (Agentforce and AI), Jan 2025', place: 'Accelerize360, Hyderabad', note: 'AI agents, RAG and agent-assist in production' },
+  { id: 'certs', kind: 'Certification', link: '#contact', pin: 'Certified', title: 'Agentforce Specialist · Claude Architect Foundations', place: 'Certifications', note: null },
+  { id: 'hr-rag', kind: 'Project', link: '#hr-rag', pin: 'HR Policy RAG', title: 'Built an HR Policy Assistant (RAG)', place: 'Hybrid search, reranking, cited answers', note: 'Answer found in the top 4 for 92.9% of questions' },
+  { id: 'away', kind: 'Project · live', link: '#away', pin: 'Away', title: 'Built Away, an AI leave agent', place: '13 tools, every rule enforced in code', note: '0 unsafe writes across 8 attacks' },
+  { id: 'sieve', kind: 'Project · live', link: '#sieve', pin: 'Sieve', title: 'Built Sieve, AI resume screening', place: 'Evidence-based scoring, Gmail intake', note: 'Right candidate ranked #1 on 5 of 5 jobs' },
+  { id: 'next', kind: 'What’s next', link: '#contact', pin: 'Next', title: 'Next: your team', place: 'No map for this one yet.', note: null },
 ]

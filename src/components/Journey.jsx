@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useMotionValueEvent, useScroll } from 'motion/react'
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'motion/react'
 import * as THREE from 'three'
 import { journey } from '../data.js'
 import { ChapterTitle } from './ui.jsx'
@@ -161,6 +161,8 @@ export default function Journey() {
       w.renderer.setSize(r.width, r.height, false)
       w.camera.aspect = r.width / r.height
       w.camera.fov = r.width < 768 ? 50 : 38
+      if (r.width >= 768) w.camera.setViewOffset(r.width, r.height, r.width * 0.14, 0, r.width, r.height)
+      else w.camera.clearViewOffset()
       w.camera.updateProjectionMatrix()
     }
     resize()
@@ -184,6 +186,7 @@ export default function Journey() {
       // stops light up once the path reaches them; labels follow their markers on screen
       let reached = -1
       const rect = canvas.getBoundingClientRect()
+      const reachedNow = w.pts.reduce((r, _, i) => (t >= i / (n - 1) - 0.002 ? i : r), -1)
       w.pts.forEach((sp, i) => {
         const on = t >= i / (n - 1) - 0.002
         if (on) reached = i
@@ -194,7 +197,7 @@ export default function Journey() {
         tmp.copy(sp); tmp.y += 1.7; tmp.project(w.camera)
         const visible = tmp.z < 1 && Math.abs(tmp.x) < 1.1 && Math.abs(tmp.y) < 1.1 && w.camera.position.distanceTo(sp) < 30
         el.style.transform = `translate(${((tmp.x + 1) / 2) * rect.width}px, ${((1 - tmp.y) / 2) * rect.height}px) translate(-50%, -100%)`
-        el.style.opacity = visible ? (on ? '1' : '0.45') : '0'
+        el.style.opacity = visible && i === reachedNow ? '1' : '0'
       })
       if (reached !== last) { last = reached; setActive(reached) }
       w.renderer.render(w.scene, w.camera)
@@ -226,18 +229,39 @@ export default function Journey() {
         <div className="pointer-events-none absolute inset-x-0 top-0 bg-gradient-to-b from-bg via-bg/70 to-transparent px-6 pb-20 pt-24 sm:px-[max(2.5rem,calc((100vw-80rem)/2+2.5rem))]">
           <ChapterTitle title="How I got here" line="From a classroom in Hyderabad to AI agents in production." />
         </div>
-        <ol className="absolute bottom-10 left-6 max-w-[min(360px,80vw)] space-y-3 sm:left-[max(2.5rem,calc((100vw-80rem)/2+2.5rem))]">
-          {journey.map((s, i) => (
-            <li key={s.id} className={`transition-all duration-500 ${i === active ? 'opacity-100' : i < active ? 'opacity-55' : 'opacity-25'} ${i > active + 1 ? 'hidden sm:block' : ''} ${i < active - 2 ? 'hidden sm:block' : ''}`}>
-              <div className={`text-[15px] ${i === active ? 'font-semibold text-ink' : 'text-ink/80'}`}>{s.title}</div>
-              <div className="text-[13px] text-ink/70">{s.place}</div>
-              {i === active && s.note && <div className="mt-0.5 font-mono text-[11px] text-teal">{s.note}</div>}
-            </li>
-          ))}
-        </ol>
-        <p className="absolute bottom-10 right-6 hidden max-w-[300px] text-right text-[13px] text-ink/60 sm:right-[max(2.5rem,calc((100vw-80rem)/2+2.5rem))] md:block">
-          The red veins are a living terrain, generated in code. Each glowing stop is a step I took; the path only goes where I’ve been.
-        </p>
+        {/* the stop the path has reached, told in a panel on the right */}
+        <aside className="absolute inset-x-4 bottom-4 md:inset-x-auto md:bottom-auto md:right-[max(2.5rem,calc((100vw-80rem)/2+2.5rem))] md:top-1/2 md:w-[380px] md:-translate-y-1/2"
+          aria-live="polite">
+          <div className="rounded-md border border-line bg-[#0f1012]/85 p-5 shadow-[0_30px_60px_-30px_rgba(0,0,0,.9)] backdrop-blur-sm md:p-7">
+            <AnimatePresence mode="wait">
+              {active < 0 ? (
+                <motion.div key="intro" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                  <div className="font-mono text-[11.5px] text-teal">Stop 00 / {String(journey.length).padStart(2, '0')}</div>
+                  <div className="mt-3 text-[22px] font-medium leading-snug">Keep scrolling to travel.</div>
+                  <p className="mt-2 text-[14.5px] text-ink/65">The path only goes where I’ve been.</p>
+                </motion.div>
+              ) : (
+                <motion.div key={journey[active].id} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}>
+                  <div className="flex items-center justify-between font-mono text-[11.5px]">
+                    <span className="text-teal">Stop {String(active + 1).padStart(2, '0')} / {String(journey.length).padStart(2, '0')}</span>
+                    <span className="text-muted">{journey[active].kind}</span>
+                  </div>
+                  <div className="mt-3 font-serif text-[clamp(1.35rem,2.2vw,1.75rem)] font-medium leading-tight">{journey[active].title}</div>
+                  <div className="mt-2 text-[15px] text-ink/70">{journey[active].place}</div>
+                  {journey[active].note && <div className="mt-4 border-l-2 border-teal pl-3 text-[14.5px] text-ink/90">{journey[active].note}</div>}
+                  {journey[active].link && (
+                    <a href={journey[active].link} className="mt-5 inline-flex items-center gap-1.5 font-mono text-[12.5px] text-ink/80 underline decoration-line underline-offset-[6px] hover:text-ink hover:decoration-ink">
+                      {journey[active].kind.startsWith('Project') ? 'See the project' : 'Read more'} ↓
+                    </a>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <div className="mt-6 flex gap-1.5" aria-hidden="true">
+              {journey.map((s, i) => <span key={s.id} className={`h-1 flex-1 rounded-full transition-colors duration-500 ${i <= active ? 'bg-teal' : 'bg-line'}`} />)}
+            </div>
+          </div>
+        </aside>
       </div>
     </section>
   )
