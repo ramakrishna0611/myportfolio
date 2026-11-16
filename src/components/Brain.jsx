@@ -192,10 +192,23 @@ export default function Brain({ onNode, lobeAnchors, labelRefs }) {
       outPos.copy(p).addScaledVector(tan, -5.8).addScaledVector(up, 1.7).addScaledVector(side, 1.5)
       outLook.copy(net.path.getPoint(clamp(t + 0.015)))
     }
-    let tCur = 0, lastNode = -2, frame = 0, offX = 0, offY = 0, rot = 0
+    let tCur = 0, lastNode = -2, frame = 0, offX = 0, offY = 0, rot = 0, zCur = heroCam.z
     const startPos = new THREE.Vector3(), startLook = new THREE.Vector3()
     pathPose(0, startPos, startLook)
     const K = nodes.length
+
+    // fit the brain into the free space under a block of copy (and between the lobe label columns)
+    const rect = id => { const r = document.getElementById(id)?.getBoundingClientRect(); return r && r.height ? r : null }
+    const fitBox = (copyId, aspect, w, vh) => {
+      const c = rect(copyId); if (!c) return null
+      const top = c.bottom + 20, grid = rect('lobe-grid'), bottom = grid ? grid.top - 16 : vh - 24
+      const L = rect('lobe-l'), R = rect('lobe-r')
+      const maxW = L && R ? R.left - L.right - 60 : w * 0.88
+      const px = Math.max(110, Math.min(bottom - top, maxW / aspect, vh * 0.6))
+      // the brain's height on screen is roughly K / z of the viewport height (K measured at fov 35)
+      const K = 8.8 * Math.tan(THREE.MathUtils.degToRad(17.5)) / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2))
+      return { z: Math.min(32, Math.max(8, K * vh / px)), ty: -((top + bottom) / 2 - vh / 2) / vh }
+    }
 
     const loop = now => {
       frame = requestAnimationFrame(loop)
@@ -242,6 +255,10 @@ export default function Brain({ onNode, lobeAnchors, labelRefs }) {
       // camera: orbit pose in the opening, blend into the axon path while diving
       pathPose(clamp(tCur), tmp, look)
       const k = ease(clamp(diveP / 0.95))
+      const cover = headP < 0.05 && diveP <= 0
+      const box = diveP <= 0 ? (cover ? fitBox('hero-copy', 0.85, w, vh) : fitBox('head-copy', 1.3, w, vh)) : null
+      if (box) zCur += (box.z - zCur) * 0.08
+      heroCam.z = zCur
       camPos.lerpVectors(heroCam, startPos, k)
       if (node >= 0 || diveP >= 0.999) camPos.copy(tmp)
       else look.lerpVectors(heroLook, startLook, k)
@@ -249,9 +266,8 @@ export default function Brain({ onNode, lobeAnchors, labelRefs }) {
       camera.lookAt(look)
 
       // shift the picture: brain centred under the copy, centred between the lobe labels, then left of the info panel
-      const cover = headP < 0.05 && diveP <= 0
       const tx = w < 768 || diveP <= 0 ? 0 : diveP < 0.5 ? 0.16 : 0.14
-      const ty = w < 768 ? (cover ? -0.19 : diveP > 0.5 ? 0.2 : 0.02) : (cover ? -0.21 : diveP > 0 ? 0 : -0.03)
+      const ty = box ? box.ty : w < 768 ? 0.2 : 0
       offX += (tx - offX) * 0.06; offY += (ty - offY) * 0.06
       camera.setViewOffset(w, vh, w * offX, vh * offY, w, vh)
       camera.updateProjectionMatrix()

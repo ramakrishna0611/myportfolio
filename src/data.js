@@ -93,13 +93,14 @@ export const projects = [
     video: '/assets/sieve-10s.mp4',
     poster: '/assets/sieve-10s.webp',
     caption: 'Live app: ranked candidates, the evidence behind the top score, and a resume flagged for prompt injection.',
-    metrics: [
-      { value: '5 / 5', label: 'jobs where the right candidate ranked #1' },
-      { value: '75 → 28', label: 'score of a keyword-stuffed resume after the fix' },
-      { value: '0 + flag', label: 'for a resume with hidden prompt-injection text' },
-      { value: '34', label: 'automated tests' },
+    use: [
+      'Open the live app and sign in as HR with the demo login below.',
+      'Pick an open job to see every applicant ranked by score.',
+      'Open a candidate: each point links to the line in their resume that earned it.',
+      'Upload a resume and watch it get read and scored.',
+      'Shortlist or reject, and preview the email before it goes out.',
     ],
-    stack: ['Python', 'FastAPI', 'Groq LLM', 'Gmail API', 'SQLAlchemy', 'JavaScript', 'pytest', 'Render'],
+    stack: ['Python', 'FastAPI', 'Groq LLM', 'Gmail API', 'SQLAlchemy', 'JavaScript', 'Render'],
     flow: [
       { kind: 'in', title: 'Resume arrives', text: 'Upload, or Gmail inbox routed by job code, title or AI match (≥ 70%)' },
       { kind: 'ai', title: 'AI extracts', text: 'Roles, dates, skills and projects become a structured profile' },
@@ -132,13 +133,14 @@ export const projects = [
     video: '/assets/away-10s.mp4',
     poster: '/assets/away-10s.webp',
     caption: 'Live app: the AI assistant answering in chat, and the calendar blocking a day that clashes with a teammate and suggesting a free one.',
-    metrics: [
-      { value: '0 / 8', label: 'unsafe writes under prompt-injection attacks' },
-      { value: '0', label: 'cross-company data leaks' },
-      { value: '4 / 4', label: 'multi-step tasks completed by the live model' },
-      { value: '43', label: 'automated tests' },
+    use: [
+      'Sign in with the company code, then as an employee (demo login below).',
+      'Ask the assistant in plain words, like “2 days casual leave from the 2nd”.',
+      'It checks your balance and team clashes, and suggests a free date if needed.',
+      'Nothing is booked until you reply “yes”.',
+      'Or pick dates on the calendar. Your PM approves the request.',
     ],
-    stack: ['Python', 'LLM tool calling', 'Groq gpt-oss-120b', 'FastAPI', 'SQLAlchemy', 'bcrypt', 'BM25', 'pytest', 'Render'],
+    stack: ['Python', 'LLM tool calling', 'Groq gpt-oss-120b', 'FastAPI', 'SQLAlchemy', 'bcrypt', 'BM25', 'Render'],
     flow: [
       { kind: 'in', title: 'Employee asks', text: '“2 days casual leave from the 2nd”, in chat or on the calendar' },
       { kind: 'ai', title: 'AI agent', text: 'gpt-oss-120b on Groq picks from 13 tools and understands the dates' },
@@ -161,13 +163,14 @@ export const projects = [
     summary: 'A plain chatbot makes up HR policy. This assistant answers only from 15 real handbook pages, cites every claim, and refuses when the policy doesn’t cover the question. Personal data is redacted before anything reaches the LLM, and every retrieval upgrade was measured with an evaluation set.',
     live: null,
     code: 'https://github.com/ramakrishna0611/hr-rag-assistant',
-    metrics: [
-      { value: '92.9%', label: 'answer found in the top 4 chunks (vs 71.4% vector only)' },
-      { value: '84.6%', label: 'answers faithful to sources (LLM-judged)' },
-      { value: '100%', label: 'out-of-scope questions refused' },
-      { value: '589', label: 'chunks from 15 handbook pages' },
+    use: [
+      'Clone the repo and add a free Gemini API key to .env.',
+      'Run the ingest step once to load the 15 handbook pages.',
+      'Start the chat with streamlit run app.py.',
+      'Ask a policy question in plain words, like “how many leave i have?”.',
+      'Every answer cites its handbook sections, and it says so when the policy doesn’t cover it.',
     ],
-    stack: ['Python', 'ChromaDB', 'sentence-transformers', 'BM25', 'Cross-encoder', 'Gemini', 'LLM-as-judge', 'Streamlit', 'pytest'],
+    stack: ['Python', 'ChromaDB', 'sentence-transformers', 'BM25', 'Cross-encoder', 'Gemini', 'LLM-as-judge', 'Streamlit'],
     bars: [['Vector search only', 71.4], ['+ BM25 keyword (hybrid)', 78.6], ['+ query expansion + rerank', 92.9]],
     flow: [
       { kind: 'in', title: 'Question', text: '“how many leave i have?”' },

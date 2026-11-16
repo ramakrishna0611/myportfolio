@@ -95,17 +95,14 @@ function Project({ p }) {
         {p.video
           ? <div className="overflow-hidden rounded-tl-md border-l border-t border-line"><Clip src={p.video} poster={p.poster} label={`10-second recording of ${p.name}`} /></div>
           : (
-            <div className="rounded-tl-md border-l border-t border-line bg-[#0b0c0e] p-4">
-              <div className="text-[13px] font-medium">Answer found in the top 4 retrieved chunks</div>
-              <div className="mt-3 space-y-2.5">
-                {p.bars.map(([l, v], i) => (
-                  <div key={l}>
-                    <div className="mb-1 flex justify-between text-[12px]"><span className="text-ink/65">{l}</span><span className="font-mono">{v}%</span></div>
-                    <div className="h-[3px] bg-line"><motion.div className="h-full" style={{ background: i === p.bars.length - 1 ? '#74d8c4' : 'rgba(232,228,218,.45)' }} initial={{ width: 0 }} animate={{ width: `${v}%` }} transition={{ duration: 0.9, delay: 0.2 + i * 0.15 }} /></div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <ol className="rounded-tl-md border-l border-t border-line bg-[#0b0c0e] p-4">
+              {p.flow.map((f, i) => (
+                <motion.li key={f.title} className="grid grid-cols-[18px_1fr] gap-2 py-1.5" initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 + i * 0.12 }}>
+                  <span className={`mt-[5px] h-2 w-2 rounded-full ${f.kind === 'ai' ? 'bg-[#a593f5]' : f.kind === 'in' ? 'bg-ink/60' : 'bg-[#74d8c4]'}`} />
+                  <span className="text-[12.5px] leading-snug"><span className="font-medium text-ink">{f.title}</span> <span className="text-ink/60">{f.text}</span></span>
+                </motion.li>
+              ))}
+            </ol>
           )}
       </div>
 
@@ -115,11 +112,17 @@ function Project({ p }) {
           <span className="font-mono text-[12px] text-muted">2026</span>
         </div>
         <p className="mt-0.5 font-mono text-[11px] text-[#74d8c4]">{p.kind}</p>
-        <p className="mt-2.5 text-[13.5px] leading-[1.6] text-ink/70">{p.tagline} {p.summary}</p>
+        <p className="mt-2.5 text-[13.5px] leading-[1.6] text-ink/70">{p.tagline}</p>
 
-        <div className="mt-4 grid grid-cols-2 gap-x-5 gap-y-3">
-          {p.metrics.map(m => <Metric key={m.label} value={m.value} label={m.label} color="#74d8c4" />)}
-        </div>
+        <h4 className="mt-5 font-mono text-[11px] uppercase tracking-[0.12em] text-muted">How to use it</h4>
+        <ol className="mt-2 space-y-2">
+          {p.use.map((step, i) => (
+            <li key={i} className="grid grid-cols-[22px_1fr] gap-1.5 text-[13.5px] leading-snug text-ink/80">
+              <span className="font-mono text-[11px] leading-[1.6] text-[#74d8c4]">{String(i + 1).padStart(2, '0')}</span>
+              <span>{step}</span>
+            </li>
+          ))}
+        </ol>
 
         <div className="mt-4 flex items-end gap-4 border-t border-line pt-4">
           <div className="flex flex-1 flex-wrap gap-1.5">
@@ -133,7 +136,7 @@ function Project({ p }) {
 
         {p.login && (
           <div className="mt-3 font-mono text-[11px] leading-relaxed text-ink/55">
-            Demo login (click to copy):{' '}
+            Demo login, click to copy:{' '}
             {p.login.map(([k, v]) => (
               <button key={k} className="mr-2 underline decoration-line underline-offset-4 hover:text-ink" onClick={() => navigator.clipboard?.writeText(v).then(() => { setCopied(v); setTimeout(() => setCopied(null), 1200) })}>
                 {copied === v ? 'copied ✓' : v}

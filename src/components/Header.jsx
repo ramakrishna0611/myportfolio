@@ -69,7 +69,7 @@ export function PlainCV({ open, onClose }) {
                 <div className="flex flex-wrap items-baseline gap-x-3"><span className="text-[19px] font-medium">{p.name}</span><span className="text-ink/60">{p.kind}</span>
                   <span className="ml-auto space-x-4 font-mono text-[12.5px]">{p.live && <a className="underline underline-offset-4" href={p.live} target="_blank" rel="noopener">Live demo</a>}<a className="underline underline-offset-4" href={p.code} target="_blank" rel="noopener">Code</a></span>
                 </div>
-                <p className="mt-1 text-[15.5px] text-ink/80">{p.tagline} {p.metrics.slice(0, 2).map(m => `${m.value} ${m.label}`).join('; ')}.</p>
+                <p className="mt-1 text-[15.5px] text-ink/80">{p.tagline}</p>
               </div>
             ))}
 
