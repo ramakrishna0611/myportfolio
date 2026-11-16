@@ -1,10 +1,13 @@
 # Portfolio: Abbidi Ramakrishna Reddy, AI Engineer
 
-A single-page, Minecraft-style portfolio built from code blocks. Plain HTML, CSS and JavaScript with no build step. Light theme by default, with a day/night toggle.
+A clean, recruiter-first portfolio. Its signature is a small yellow bus that drives along a road at the bottom of the screen to whichever section you're reading. Click any stop to jump to that section.
 
-Sections: Bio, Experience, Skills (an inventory with hover tooltips), Projects, Certifications, Education.
+- **Sections:** About → Experience → Skills → Projects → Certifications → Education → Contact.
+- **Recruiter mode:** a one-click, 30-second summary panel with the resume download.
+- **Projects:** each one has a screen recording of the live app, key metrics, and an expandable "How it works" section with an animated architecture flow and a code excerpt.
+- **Themes:** light by default, with a dark toggle. Animation is turned off when the visitor prefers reduced motion.
 
-Each project has a screen recording of the live app and an animated "how it works" block diagram.
+Built with React, Vite, Tailwind CSS v4 and Motion.
 
 ## Projects featured
 - **Sieve**, AI resume screening: [live](https://sieve-resume-screening.onrender.com) · [code](https://github.com/ramakrishna0611/talent-screening-agent)
@@ -12,7 +15,12 @@ Each project has a screen recording of the live app and an animated "how it work
 - **HR Policy Assistant (RAG)**: [code](https://github.com/ramakrishna0611/hr-rag-assistant)
 
 ## Run locally
-Open `index.html` in a browser.
+```bash
+npm install
+npm run dev
+```
 
 ## Deploy
-Static site on Vercel. Import the repo with framework preset **Other**, leave the build command empty, and use `.` as the output directory.
+On Vercel, import the repo. It detects Vite automatically: the build command is `npm run build` and the output directory is `dist`.
+
+Content lives in `src/data.js`.

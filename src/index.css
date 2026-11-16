@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg: #f7f6f2;
+  --surface: #ffffff;
+  --surface-2: #f1efe8;
+  --ink: #14151a;
+  --muted: #5d6170;
+  --line: #e4e1d8;
+  --accent: #ffc21a;
+  --accent-ink: #14151a;
+  --link: #2f5bd3;
+  --road: #2b2d33;
+  --code-bg: #15171d;
+}
+.dark {
+  --bg: #0e1014;
+  --surface: #171a21;
+  --surface-2: #1e222b;
+  --ink: #f2f3f5;
+  --muted: #9aa1ad;
+  --line: #2a2f39;
+  --accent: #ffc21a;
+  --accent-ink: #14151a;
+  --link: #8fb0ff;
+  --road: #3a3e48;
+  --code-bg: #0b0c10;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-link: var(--link);
+  --color-road: var(--road);
+  --color-code: var(--code-bg);
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", Consolas, monospace;
+}
+
+html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color .25s, color .25s;
+}
+::selection { background: var(--accent); color: var(--accent-ink); }
+
+/* soft dotted backdrop */
+.dots {
+  background-image: radial-gradient(color-mix(in srgb, var(--ink) 9%, transparent) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* moving parcel along the "how it works" pipes */
+@keyframes run-x { from { left: 0 } to { left: calc(100% - 8px) } }
+@keyframes run-y { from { top: 0 } to { top: calc(100% - 8px) } }
+.pipe-dot { animation: run-y 1.6s linear infinite; }
+@media (min-width: 900px) { .pipe-dot { animation-name: run-x; } }
+
+/* code tokens */
+.tk-k { color: #c792ea } .tk-s { color: #c3e88d } .tk-c { color: #7f8597; font-style: italic }
+.tk-n { color: #f78c6c } .tk-f { color: #82aaff } .tk-b { color: #ffcb6b } .tk-o { color: #89ddff }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .pipe-dot { animation: none; }
+}
