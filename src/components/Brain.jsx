@@ -120,13 +120,13 @@ export default function Brain({ onNode, lobeAnchors, labelRefs }) {
   useEffect(() => {
     const canvas = canvasRef.current
     const small = window.innerWidth < 768
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' })
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' })
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, small ? 1.5 : 1.75))
     renderer.outputColorSpace = THREE.SRGBColorSpace
     renderer.toneMapping = THREE.ACESFilmicToneMapping
     renderer.toneMappingExposure = 1.3
-    const bg = new THREE.Color('#121315')
-    renderer.setClearColor(bg)
+    const bg = new THREE.Color('#0a0b10')
+    renderer.setClearColor(0x000000, 0) // the page's own gradient shows through
     const scene = new THREE.Scene()
     scene.fog = new THREE.Fog(bg, 9, 32)
     const camera = new THREE.PerspectiveCamera(35, 1, 0.05, 120)
@@ -140,6 +140,16 @@ export default function Brain({ onNode, lobeAnchors, labelRefs }) {
 
     const net = buildNetwork(scene, small)
     const brainRoot = new THREE.Group(); scene.add(brainRoot)
+    // soft violet-teal glow behind the brain
+    const glowTex = (() => {
+      const c = document.createElement('canvas'); c.width = c.height = 256
+      const g = c.getContext('2d'), r = g.createRadialGradient(128, 128, 0, 128, 128, 128)
+      r.addColorStop(0, 'rgba(150,140,255,0.55)'); r.addColorStop(0.45, 'rgba(116,216,196,0.18)'); r.addColorStop(1, 'rgba(0,0,0,0)')
+      g.fillStyle = r; g.fillRect(0, 0, 256, 256)
+      const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t
+    })()
+    const brainGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }))
+    brainGlow.position.set(0, 0, -2.5); brainGlow.scale.setScalar(11); scene.add(brainGlow)
     let brainMats = [], anchors = []
 
     const loader = new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder)
@@ -150,7 +160,7 @@ export default function Brain({ onNode, lobeAnchors, labelRefs }) {
       model.position.sub(center).multiplyScalar(s); model.scale.setScalar(s)
       model.traverse(o => {
         if (!o.isMesh) return
-        const m = new THREE.MeshPhysicalMaterial({ color: 0x4a3a46, roughness: 0.32, metalness: 0.05, clearcoat: 1, clearcoatRoughness: 0.28, sheen: 1, sheenRoughness: 0.35, sheenColor: new THREE.Color(0x74d8c4), transparent: true })
+        const m = new THREE.MeshPhysicalMaterial({ color: 0x6a5466, roughness: 0.3, metalness: 0.05, clearcoat: 1, clearcoatRoughness: 0.28, sheen: 1, sheenRoughness: 0.35, sheenColor: new THREE.Color(0x74d8c4), transparent: true })
         o.material = m; brainMats.push(m)
       })
       brainRoot.add(model)
@@ -202,15 +212,16 @@ export default function Brain({ onNode, lobeAnchors, labelRefs }) {
 
     // fit the brain into the free space under a block of copy (and between the lobe label columns)
     const rect = id => { const r = document.getElementById(id)?.getBoundingClientRect(); return r && r.height ? r : null }
-    const fitBox = (copyId, aspect, w, vh) => {
+    const fitBox = (copyId, aspect, w, vh, labels) => {
       const c = rect(copyId); if (!c) return null
-      const top = c.bottom + 20, grid = rect('lobe-grid'), bottom = grid ? grid.top - 16 : vh - 24
-      const L = rect('lobe-l'), R = rect('lobe-r')
+      // the lobe labels only count in the head view (they sit invisibly on the page otherwise)
+      const top = c.bottom + 20, grid = labels && rect('lobe-grid'), bottom = grid ? grid.top - 16 : vh - 24
+      const L = labels && rect('lobe-l'), R = labels && rect('lobe-r')
       const maxW = L && R ? R.left - L.right - 60 : w * 0.88
       const px = Math.max(110, Math.min(bottom - top, maxW / aspect, vh * 0.6))
       // the brain's height on screen is roughly K / z of the viewport height (K measured at fov 35)
       const K = 8.8 * Math.tan(THREE.MathUtils.degToRad(17.5)) / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2))
-      return { z: Math.min(32, Math.max(8, K * vh / (px * 1.3))), ty: -((top + bottom) / 2 - vh / 2) / vh }
+      return { z: Math.min(32, Math.max(8, K * vh / (px * 1.05))), ty: -((top + bottom) / 2 - vh / 2) / vh }
     }
 
     const loop = now => {
@@ -236,6 +247,7 @@ export default function Brain({ onNode, lobeAnchors, labelRefs }) {
       brainRoot.scale.setScalar(1 + ease(clamp(diveP / 0.85)) * 1.6)
       brainMats.forEach(m => { m.opacity = 1 - dissolve; m.depthWrite = dissolve < 0.5 })
       brainRoot.visible = dissolve < 0.999
+      brainGlow.material.opacity = 0.9 * (1 - dissolve)
 
       // the network fades in once we're inside
       const inside = clamp((diveP - 0.45) / 0.45)
@@ -259,7 +271,7 @@ export default function Brain({ onNode, lobeAnchors, labelRefs }) {
       pathPose(clamp(tCur), tmp, look)
       const k = ease(clamp(diveP / 0.95))
       const cover = headP < 0.05 && diveP <= 0
-      const box = diveP <= 0 ? (cover ? fitBox('hero-copy', 0.85, w, vh) : fitBox('head-copy', 1.3, w, vh)) : null
+      const box = diveP <= 0 ? (cover ? fitBox('hero-copy', 1.3, w, vh, false) : fitBox('head-copy', 1.3, w, vh, true)) : null
       if (box) zCur += (box.z - zCur) * 0.08
       heroCam.z = zCur
       camPos.lerpVectors(heroCam, startPos, k)

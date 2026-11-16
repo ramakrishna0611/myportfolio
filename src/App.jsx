@@ -104,7 +104,7 @@ export default function App() {
 
       {/* skills on the lobes: fixed beside the brain, fading in and out rather than scrolling away */}
       <div ref={lobeOverlay} className="pointer-events-none fixed inset-0 z-[4]" style={{ opacity: 0 }}>
-        <div id="head-copy" className="absolute inset-x-0 top-[88px] px-6 text-center md:top-[96px]">
+        <div id="head-copy" className="absolute inset-x-0 top-[104px] px-6 text-center md:top-[96px]">
           <h2 className="font-serif text-[clamp(2.4rem,5vw,4rem)] font-normal leading-none tracking-[-0.02em]">Inside my head</h2>
           <p className="mt-2 text-[15px] text-ink/70">Everything I learn has a place. Keep scrolling and we go in.</p>
         </div>
@@ -120,14 +120,14 @@ export default function App() {
 
       <main className="relative z-[2]">
         {/* 1. the hook, with the brain turning beside it */}
-        <section id="hero" className={`flex min-h-[100svh] flex-col items-center pt-[13svh] text-center md:pt-[12svh] [@media(max-height:760px)]:md:pt-[96px] ${PAD}`}>
+        <section id="hero" className={`flex min-h-[100svh] flex-col items-center pt-[max(13svh,124px)] text-center md:pt-[12svh] [@media(max-height:760px)]:md:pt-[96px] ${PAD}`}>
           <div id="hero-copy" className="max-w-[860px]">
             <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
               className="font-serif text-[clamp(2.6rem,5.6vw,5rem)] font-normal leading-[0.98] [@media(max-height:760px)]:md:text-[3.4rem] tracking-[-0.025em]">
-              I teach AI to follow the rules.
+              I teach AI to <em className="bg-gradient-to-r from-[#9fb1ff] to-[#74d8c4] bg-clip-text pr-1 italic text-transparent">follow the rules.</em>
             </motion.h1>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45, duration: 0.8 }}>
-              <p className="mx-auto mt-5 max-w-[620px] text-[16.5px] [@media(max-height:760px)]:mt-3 [@media(max-height:760px)]:text-[15px] leading-relaxed text-ink/75">
+              <p className="mx-auto mt-5 max-w-[620px] text-[16.5px] [@media(max-height:760px)]:mt-3 [@media(max-height:760px)]:text-[15px] leading-relaxed text-ink/85">
                 I’m {profile.name}, an AI Engineer at Accelerize360 building LLM agents and RAG systems. The model can propose. My code decides.
               </p>
               <div className="mt-7 flex flex-wrap items-center justify-center gap-6 [@media(max-height:760px)]:mt-5">

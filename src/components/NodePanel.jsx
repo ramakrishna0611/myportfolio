@@ -119,15 +119,10 @@ function Project({ p }) {
 
       {/* on wide screens the how-to sits beside the clip, so nothing hides below the fold */}
       <div className="px-1.5 pb-1.5 lg:pt-1">
-        <h4 className="mt-5 font-mono lg:mt-0 text-[11px] uppercase tracking-[0.12em] text-muted">How to use it</h4>
-        <ol className="mt-2 space-y-2">
-          {p.use.map((step, i) => (
-            <li key={i} className="grid grid-cols-[22px_1fr] gap-1.5 text-[13.5px] leading-snug text-ink/80">
-              <span className="font-mono text-[11px] leading-[1.6] text-[#74d8c4]">{String(i + 1).padStart(2, '0')}</span>
-              <span>{step}</span>
-            </li>
-          ))}
-        </ol>
+        <h4 className="mt-5 font-mono text-[11px] uppercase tracking-[0.12em] text-[#74d8c4] lg:mt-0">What it does</h4>
+        <p className="mt-1.5 text-[14px] leading-[1.65] text-ink/85">{p.does}</p>
+        <h4 className="mt-4 font-mono text-[11px] uppercase tracking-[0.12em] text-[#74d8c4]">How I built it</h4>
+        <p className="mt-1.5 text-[14px] leading-[1.65] text-ink/85">{p.built}</p>
 
         <div className="mt-4 flex items-end gap-4 border-t border-line pt-4">
           <div className="flex flex-1 flex-wrap gap-1.5">
@@ -199,7 +194,7 @@ export default function NodePanel({ active }) {
       <AnimatePresence mode="wait">
         {n && (
           <motion.aside key={n.id} aria-live="polite" aria-label={n.label}
-            className="pointer-events-auto max-h-[58svh] overflow-y-auto rounded-md border border-line bg-[#0f1012]/90 p-5 shadow-[0_30px_80px_-30px_rgba(0,0,0,.95)] backdrop-blur-md md:max-h-[calc(100svh-120px)] md:p-7"
+            className="pointer-events-auto max-h-[58svh] overflow-y-auto rounded-md border border-line bg-[#0d0f16]/85 p-5 shadow-[0_30px_80px_-30px_rgba(0,0,0,.95)] backdrop-blur-md md:max-h-[calc(100svh-120px)] md:p-7"
             initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}>
             <div className="flex items-center justify-between font-mono text-[11.5px]">
               <span className="text-[#74d8c4]">Neuron {String(active + 1).padStart(2, '0')} / {String(nodes.length).padStart(2, '0')}</span>

@@ -93,13 +93,8 @@ export const projects = [
     video: '/assets/sieve-10s.mp4',
     poster: '/assets/sieve-10s.webp',
     caption: 'Live app: ranked candidates, the evidence behind the top score, and a resume flagged for prompt injection.',
-    use: [
-      'Open the live app and sign in as HR with the demo login below.',
-      'Pick an open job to see every applicant ranked by score.',
-      'Open a candidate: each point links to the line in their resume that earned it.',
-      'Upload a resume and watch it get read and scored.',
-      'Shortlist or reject, and preview the email before it goes out.',
-    ],
+    does: "HR picks a job and Sieve ranks every applicant against it. Each score comes with quotes from the resume, so a recruiter can see exactly why someone ranked first, then shortlist or reject them with an email preview.",
+    built: "The LLM (on Groq) only reads: it turns each resume into a structured profile of roles, skills and projects. Plain Python does the scoring on a 100-point rubric, giving full credit for a skill used in real work and half for one that is only listed, so keyword stuffing stops paying. Resumes come in by upload or from a Gmail inbox through the Gmail API, hidden prompt-injection text is flagged, and recruiters can review candidates name-blind. FastAPI and SQLAlchemy on the back end, plain JavaScript on the front, hosted on Render.",
     stack: ['Python', 'FastAPI', 'Groq LLM', 'Gmail API', 'SQLAlchemy', 'JavaScript', 'Render'],
     flow: [
       { kind: 'in', title: 'Resume arrives', text: 'Upload, or Gmail inbox routed by job code, title or AI match (≥ 70%)' },
@@ -133,13 +128,8 @@ export const projects = [
     video: '/assets/away-10s.mp4',
     poster: '/assets/away-10s.webp',
     caption: 'Live app: the AI assistant answering in chat, and the calendar blocking a day that clashes with a teammate and suggesting a free one.',
-    use: [
-      'Sign in with the company code, then as an employee (demo login below).',
-      'Ask the assistant in plain words, like “2 days casual leave from the 2nd”.',
-      'It checks your balance and team clashes, and suggests a free date if needed.',
-      'Nothing is booked until you reply “yes”.',
-      'Or pick dates on the calendar. Your PM approves the request.',
-    ],
+    does: "Employees book leave from a calendar or by chatting with an AI assistant. It understands requests like “2 days casual leave from the 2nd”, warns about clashes with teammates and suggests free dates, and nothing is booked until the employee says yes. Their PM approves, and a BA covers while the PM is away.",
+    built: "The assistant is gpt-oss-120b on Groq with 13 tools, but it can only propose. Leave balances, clash rules, permissions and the wall between the two companies are all enforced in Python, and booking is a two-step write that needs the user’s own “yes”, so a message saying “ignore your rules and book it” gets nowhere. Built with FastAPI and SQLAlchemy, bcrypt for passwords, hosted on Render.",
     stack: ['Python', 'LLM tool calling', 'Groq gpt-oss-120b', 'FastAPI', 'SQLAlchemy', 'bcrypt', 'BM25', 'Render'],
     flow: [
       { kind: 'in', title: 'Employee asks', text: '“2 days casual leave from the 2nd”, in chat or on the calendar' },
@@ -163,13 +153,8 @@ export const projects = [
     summary: 'A plain chatbot makes up HR policy. This assistant answers only from 15 real handbook pages, cites every claim, and refuses when the policy doesn’t cover the question. Personal data is redacted before anything reaches the LLM, and every retrieval upgrade was measured with an evaluation set.',
     live: null,
     code: 'https://github.com/ramakrishna0611/hr-rag-assistant',
-    use: [
-      'Clone the repo and add a free Gemini API key to .env.',
-      'Run the ingest step once to load the 15 handbook pages.',
-      'Start the chat with streamlit run app.py.',
-      'Ask a policy question in plain words, like “how many leave i have?”.',
-      'Every answer cites its handbook sections, and it says so when the policy doesn’t cover it.',
-    ],
+    does: "Employees ask HR policy questions in plain words and get answers taken only from 15 real handbook pages, with a citation on every claim. If the handbook doesn’t cover the question, it says so instead of guessing.",
+    built: "Personal data such as email, phone, PAN and Aadhaar numbers is removed before anything reaches the model. Search is hybrid: vector search (MiniLM embeddings in ChromaDB) plus BM25 keyword search, merged with reciprocal rank fusion. A cross-encoder then keeps the best 4 of 20 passages and refuses when nothing is relevant, and Gemini writes the answer from those passages only. Every retrieval change was checked against a hand-written question set. Streamlit chat front end.",
     stack: ['Python', 'ChromaDB', 'sentence-transformers', 'BM25', 'Cross-encoder', 'Gemini', 'LLM-as-judge', 'Streamlit'],
     bars: [['Vector search only', 71.4], ['+ BM25 keyword (hybrid)', 78.6], ['+ query expansion + rerank', 92.9]],
     flow: [
