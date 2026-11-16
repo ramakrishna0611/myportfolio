@@ -90,8 +90,8 @@ export const projects = [
     live: 'https://sieve-resume-screening.onrender.com',
     code: 'https://github.com/ramakrishna0611/talent-screening-agent',
     login: [['Email', 'priya@kestrel.test'], ['Password', 'Welcome@123']],
-    video: '/assets/sieve-demo.mp4',
-    poster: '/assets/sieve-poster.webp',
+    video: '/assets/sieve-10s.mp4',
+    poster: '/assets/sieve-10s.webp',
     caption: 'Live app: ranked candidates, the evidence behind the top score, and a resume flagged for prompt injection.',
     metrics: [
       { value: '5 / 5', label: 'jobs where the right candidate ranked #1' },
@@ -129,8 +129,8 @@ export const projects = [
     live: 'https://away-leave-tracker.onrender.com',
     code: 'https://github.com/ramakrishna0611/leave-tracker-agent',
     login: [['Company', 'KSTL01'], ['Company password', 'kestrel@2026'], ['Email', 'kiran@kestrel.test'], ['Password', 'Welcome@123']],
-    video: '/assets/away-demo.mp4',
-    poster: '/assets/away-poster.webp',
+    video: '/assets/away-10s.mp4',
+    poster: '/assets/away-10s.webp',
     caption: 'Live app: the AI assistant answering in chat, and the calendar blocking a day that clashes with a teammate and suggesting a free one.',
     metrics: [
       { value: '0 / 8', label: 'unsafe writes under prompt-injection attacks' },
@@ -201,28 +201,28 @@ export const education = {
   note: 'Coursework in machine learning, deep learning and NLP.',
 }
 
-/* ---------- story chapters ---------- */
+/* ---------- the brain ---------- */
 
-// orbiting pixel skills the boy absorbs, in the order he swallows them
-export const mindSkills = [
-  ['PY', 'Python', '#d9b94a'], ['SQL', 'SQL', '#6f8fd8'], ['LLM', 'LLMs', '#a593f5'], ['RAG', 'RAG', '#5fc4a6'],
-  ['AGT', 'Agents', '#74d8c4'], ['TC', 'Tool calling', '#d97a9a'], ['EV', 'Evals', '#e0946a'], ['GR', 'Guardrails', '#d8676f'],
-  ['API', 'FastAPI', '#6fc2cf'], ['AF', 'Agentforce', '#7da6e8'],
+// skill groups shown on the brain's lobes in the opening
+export const lobes = [
+  { n: '01', lobe: 'Frontal lobe', title: 'LLM engineering', items: 'Agents, tool calling, RAG, evaluations, guardrails' },
+  { n: '02', lobe: 'Parietal lobe', title: 'Code and data', items: 'Python, SQL, JavaScript, SQLAlchemy, ChromaDB' },
+  { n: '03', lobe: 'Temporal lobe', title: 'AI platforms', items: 'Agentforce, Data Cloud, Prompt Builder, Trust Layer' },
+  { n: '04', lobe: 'Occipital lobe', title: 'Shipping', items: 'FastAPI, Gmail API, pytest, Render, Vercel' },
 ]
 
-export const mind = [
-  { n: '01', lobe: 'Language', title: 'Code and data', items: 'Python, SQL, JavaScript, SQLAlchemy', skills: ['PY', 'SQL'] },
-  { n: '02', lobe: 'Reasoning', title: 'LLM engineering', items: 'Agents, tool calling, RAG, evaluations, guardrails', skills: ['LLM', 'RAG', 'AGT', 'TC', 'EV', 'GR'] },
-  { n: '03', lobe: 'Hands', title: 'Shipping', items: 'FastAPI, Gmail API, pytest, Render, Vercel', skills: ['API'] },
-  { n: '04', lobe: 'Memory', title: 'Platforms', items: 'Agentforce, Data Cloud, Prompt Builder, Einstein Trust Layer', skills: ['AF'] },
+// the neurons the camera travels through, in order
+export const nodes = [
+  { id: 'bio', label: 'Bio', kind: 'Who I am' },
+  { id: 'skills', label: 'Skills', kind: 'What I know' },
+  { id: 'experience', label: 'Experience', kind: 'Where I work' },
+  { id: 'sieve', label: 'Sieve', kind: 'Project 01 · live' },
+  { id: 'away', label: 'Away', kind: 'Project 02 · live' },
+  { id: 'hr-rag', label: 'HR Policy RAG', kind: 'Project 03' },
+  { id: 'certifications', label: 'Certifications', kind: 'Verified' },
+  { id: 'contact', label: 'Contact', kind: 'Say hello' },
 ]
 
-export const journey = [
-  { id: 'cbit', kind: 'Education', link: null, pin: 'CBIT, Hyderabad', title: 'B.E. Computer Science (AI & ML), 2021 to 2025', place: 'Chaitanya Bharathi Institute of Technology', note: 'GPA 8.85 / 10' },
-  { id: 'a360', kind: 'Work', link: '#experience', pin: 'Accelerize360', title: 'Software Developer (Agentforce and AI), Jan 2025', place: 'Accelerize360, Hyderabad', note: 'AI agents, RAG and agent-assist in production' },
-  { id: 'certs', kind: 'Certification', link: '#contact', pin: 'Certified', title: 'Agentforce Specialist · Claude Architect Foundations', place: 'Certifications', note: null },
-  { id: 'hr-rag', kind: 'Project', link: '#hr-rag', pin: 'HR Policy RAG', title: 'Built an HR Policy Assistant (RAG)', place: 'Hybrid search, reranking, cited answers', note: 'Answer found in the top 4 for 92.9% of questions' },
-  { id: 'away', kind: 'Project · live', link: '#away', pin: 'Away', title: 'Built Away, an AI leave agent', place: '13 tools, every rule enforced in code', note: '0 unsafe writes across 8 attacks' },
-  { id: 'sieve', kind: 'Project · live', link: '#sieve', pin: 'Sieve', title: 'Built Sieve, AI resume screening', place: 'Evidence-based scoring, Gmail intake', note: 'Right candidate ranked #1 on 5 of 5 jobs' },
-  { id: 'next', kind: 'What’s next', link: '#contact', pin: 'Next', title: 'Next: your team', place: 'No map for this one yet.', note: null },
-]
+export const credits = {
+  brain: { title: 'Detailed Human Brain Model (3D)', author: 'Johnson J', source: 'https://3d.nih.gov/entries/21161', license: 'CC BY 4.0', licenseUrl: 'https://creativecommons.org/licenses/by/4.0/' },
+}

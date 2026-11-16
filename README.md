@@ -1,15 +1,16 @@
 # Portfolio: Abbidi Ramakrishna Reddy, AI Engineer
 
-A scroll-driven story, told the way a model is trained. The header counter runs from "Training 0%" to "Trained. Ready to ship."
+A scroll-driven journey through my brain.
 
-1. **The hook:** *"I teach AI to follow the rules."* A pixel-art boy whose eyes follow your cursor, with a terminal typing beside him.
-2. **Inside my head:** as you scroll, the boy absorbs ten skills one by one. His pixels then scatter and reassemble into the man, the AI Engineer. The skill groups light up as they're absorbed.
-3. **How I got here:** a real-time **3D map** built with Three.js. It has a procedural terrain with contour lines, red stream "veins" and blue voxel fields. A glowing path draws itself from CBIT → Accelerize360 → certifications → each project, the camera flies along it, and each stop lights up in the timeline.
-4. **At work:** five numbered highlights from Accelerize360.
-5. **Projects:** Sieve, Away and the HR Policy Assistant. Each has its screen recording, metrics, links and a "How it works" breakdown with a code excerpt.
-6. **Closing:** certifications and contact.
+1. **The hook:** *"I teach AI to follow the rules."* A realistic 3D brain turns beside it.
+2. **Inside my head:** my four skill groups are labelled on the brain's lobes, with leader lines that follow the rotating model.
+3. **The dive:** the brain swells and dissolves as the camera flies inside.
+4. **The neurons:** a forest of branching, glowing neurons. The camera travels along a lit axon from neuron to neuron: Bio → Skills → Experience → Sieve → Away → HR Policy RAG → Certifications → Contact.
+5. **Info panels:** each neuron opens its panel automatically on arrival. Project panels play a 10-second clip of the live app.
 
-For recruiters, **Plain CV** opens a one-page text CV, and the resume download is always in the header.
+The header counter runs from "Training 0%" to "Trained. Ready to ship." **Plain CV** opens a one-page text CV for recruiters.
+
+Brain model: ["Detailed Human Brain Model (3D)"](https://3d.nih.gov/entries/21161) by Johnson J, NIH 3D, licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). I simplified it to about 30% of its triangles and compressed it with meshopt.
 
 Built with React, Vite, Tailwind CSS v4 and Motion.
 
