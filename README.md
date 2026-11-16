@@ -1,13 +1,15 @@
 # Portfolio: Abbidi Ramakrishna Reddy, AI Engineer
 
-An interactive, game-style portfolio.
+A scroll-driven story, told the way a model is trained. The header counter runs from "Training 0%" to "Trained. Ready to ship."
 
-1. **Start:** a pixel-art boy stands in space, with my skills orbiting him.
-2. **Level-up:** click him and he swallows the skills one by one (an XP bar fills). His pixels then burst apart and reassemble as a grown man, the AI Engineer.
-3. **The map:** click him again and laser paths shoot out to destinations: my three projects and the "about me" areas (About, Experience, Skills, Certifications, Education, Contact).
-4. **Destinations:** clicking one opens its story. A project panel holds the screen recording of the live app, metrics, an animated "How it works" flow and a code excerpt.
-5. **For recruiters:** "Skip to the map", "Quick briefing" (a 30-second summary) and "Resume" are always one click away.
-6. **Links and keyboard:** links like `/#sieve` open a destination directly. Arrow keys move between destinations.
+1. **The hook:** *"I teach AI to follow the rules."* A pixel-art boy whose eyes follow your cursor, with a terminal typing beside him.
+2. **Inside my head:** as you scroll, the boy absorbs ten skills one by one. His pixels then scatter and reassemble into the man, the AI Engineer. The skill groups light up as they're absorbed.
+3. **How I got here:** a real-time **3D map** built with Three.js. It has a procedural terrain with contour lines, red stream "veins" and blue voxel fields. A glowing path draws itself from CBIT → Accelerize360 → certifications → each project, the camera flies along it, and each stop lights up in the timeline.
+4. **At work:** five numbered highlights from Accelerize360.
+5. **Projects:** Sieve, Away and the HR Policy Assistant. Each has its screen recording, metrics, links and a "How it works" breakdown with a code excerpt.
+6. **Closing:** certifications and contact.
+
+For recruiters, **Plain CV** opens a one-page text CV, and the resume download is always in the header.
 
 Built with React, Vite, Tailwind CSS v4 and Motion.
 

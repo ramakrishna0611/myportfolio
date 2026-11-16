@@ -200,3 +200,29 @@ export const education = {
   gpa: '8.85',
   note: 'Coursework in machine learning, deep learning and NLP.',
 }
+
+/* ---------- story chapters ---------- */
+
+// orbiting pixel skills the boy absorbs, in the order he swallows them
+export const mindSkills = [
+  ['PY', 'Python', '#d9b94a'], ['SQL', 'SQL', '#6f8fd8'], ['LLM', 'LLMs', '#a593f5'], ['RAG', 'RAG', '#5fc4a6'],
+  ['AGT', 'Agents', '#74d8c4'], ['TC', 'Tool calling', '#d97a9a'], ['EV', 'Evals', '#e0946a'], ['GR', 'Guardrails', '#d8676f'],
+  ['API', 'FastAPI', '#6fc2cf'], ['AF', 'Agentforce', '#7da6e8'],
+]
+
+export const mind = [
+  { n: '01', lobe: 'Language', title: 'Code and data', items: 'Python, SQL, JavaScript, SQLAlchemy', skills: ['PY', 'SQL'] },
+  { n: '02', lobe: 'Reasoning', title: 'LLM engineering', items: 'Agents, tool calling, RAG, evaluations, guardrails', skills: ['LLM', 'RAG', 'AGT', 'TC', 'EV', 'GR'] },
+  { n: '03', lobe: 'Hands', title: 'Shipping', items: 'FastAPI, Gmail API, pytest, Render, Vercel', skills: ['API'] },
+  { n: '04', lobe: 'Memory', title: 'Platforms', items: 'Agentforce, Data Cloud, Prompt Builder, Einstein Trust Layer', skills: ['AF'] },
+]
+
+export const journey = [
+  { id: 'cbit', pin: 'CBIT, Hyderabad', title: 'B.E. Computer Science (AI & ML), 2021 to 2025', place: 'Chaitanya Bharathi Institute of Technology', note: 'GPA 8.85 / 10' },
+  { id: 'a360', pin: 'Accelerize360', title: 'Software Developer (Agentforce and AI), Jan 2025', place: 'Accelerize360, Hyderabad', note: 'AI agents, RAG and agent-assist in production' },
+  { id: 'certs', pin: 'Certified', title: 'Agentforce Specialist · Claude Architect Foundations', place: 'Certifications', note: null },
+  { id: 'hr-rag', pin: 'HR Policy RAG', title: 'Built an HR Policy Assistant (RAG)', place: 'Hybrid search, reranking, cited answers', note: 'Answer found in the top 4 for 92.9% of questions' },
+  { id: 'away', pin: 'Away', title: 'Built Away, an AI leave agent', place: '13 tools, every rule enforced in code', note: '0 unsafe writes across 8 attacks' },
+  { id: 'sieve', pin: 'Sieve', title: 'Built Sieve, AI resume screening', place: 'Evidence-based scoring, Gmail intake', note: 'Right candidate ranked #1 on 5 of 5 jobs' },
+  { id: 'next', pin: 'Next', title: 'Next: your team', place: 'No map for this one yet.', note: null },
+]

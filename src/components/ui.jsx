@@ -1,53 +1,41 @@
 import { motion } from 'motion/react'
 
-export function SectionHeader({ n, code, title, sub }) {
+/* Chapter title in the reference's style: big serif, one short line under it. */
+export function ChapterTitle({ title, line, className = '' }) {
   return (
-    <div className="mb-10 sm:mb-12">
-      <div className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.25em] text-cyan">
-        <span className="h-px w-8 bg-gradient-to-r from-transparent to-cyan" />
-        <span>{String(n).padStart(2, '0')} // {code}</span>
-      </div>
-      <h2 className="mt-3 font-display text-4xl font-bold tracking-tight text-ink sm:text-5xl">{title}</h2>
-      {sub && <p className="mt-3 max-w-2xl text-muted">{sub}</p>}
+    <div className={className}>
+      <h2 className="font-serif text-[clamp(2.4rem,5vw,4rem)] font-medium leading-[1.02] tracking-[-0.02em] text-ink">{title}</h2>
+      {line && <p className="mt-3 max-w-xl text-[17px] text-ink/85">{line}</p>}
     </div>
   )
-}
-
-/* HUD-style corner brackets; put inside an element with the "hud" class */
-export const Corners = () => (<><i className="c tl" /><i className="c tr" /><i className="c bl" /><i className="c br" /></>)
-
-/* Sets --mx/--my so the .spot border glow follows the mouse */
-export const spotlight = e => {
-  const r = e.currentTarget.getBoundingClientRect()
-  e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`)
-  e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`)
 }
 
 export function Reveal({ children, className = '', delay = 0, as = 'div' }) {
   const M = motion[as]
   return (
-    <M
-      className={className}
-      initial={{ opacity: 0, y: 22 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay }}
-    >
+    <M className={className} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay }}>
       {children}
     </M>
   )
 }
 
-export function Button({ href, children, variant = 'ghost', className = '', ...rest }) {
-  const base = 'inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan'
-  const styles = {
-    primary: 'bg-cyan text-[#04121a] shadow-[0_0_24px_rgba(77,225,255,.45)] hover:-translate-y-0.5 hover:shadow-[0_0_36px_rgba(77,225,255,.7)]',
-    light: 'bg-white text-[#05070f] hover:-translate-y-0.5 hover:bg-white/90',
-    ghost: 'border border-line bg-white/[.04] text-ink hover:border-cyan/60 hover:bg-cyan/10',
-  }
-  const external = href?.startsWith('http')
+const ext = href => (href?.startsWith('http') ? { target: '_blank', rel: 'noopener' } : {})
+
+/* Cream arrow button with a coloured tip, like the reference's "Watch it happen". */
+export function ArrowButton({ href, children, tip = '↓', ...rest }) {
   return (
-    <a href={href} className={`${base} ${styles[variant]} ${className}`} {...(external ? { target: '_blank', rel: 'noopener' } : {})} {...rest}>
+    <a href={href} {...ext(href)} {...rest} className="group inline-flex h-12 items-stretch font-mono text-[13px] text-[#151515] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink">
+      <span className="cta flex items-center bg-ink pl-4 pr-7 transition group-hover:bg-white">{children}</span>
+      <span className="cta-tip -ml-[10px] flex w-14 items-center justify-center bg-accent pl-3 font-pixel text-[15px] transition group-hover:brightness-110">{tip}</span>
+    </a>
+  )
+}
+
+/* Quiet text link with an arrow, used for secondary actions. */
+export function TextLink({ href, children, className = '', ...rest }) {
+  return (
+    <a href={href} {...ext(href)} {...rest} className={`inline-flex items-center gap-1.5 font-mono text-[13px] text-ink/80 underline decoration-line underline-offset-[6px] transition hover:text-ink hover:decoration-ink ${className}`}>
       {children}
     </a>
   )
@@ -90,17 +78,16 @@ export function highlight(src) {
 export function CodeWindow({ file, code, note, className = '' }) {
   const lines = code.split('\n')
   return (
-    <div className={`overflow-hidden rounded-2xl border border-line bg-code/90 text-[#e8e9ee] shadow-[0_20px_60px_-24px_rgba(77,225,255,.25)] backdrop-blur ${className}`}>
-      <div className="flex items-center gap-2 border-b border-white/10 px-4 py-2.5 font-mono text-xs text-white/60">
-        <span className="flex gap-1.5"><i className="h-2.5 w-2.5 rounded-full bg-[#ff5f56]" /><i className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e]" /><i className="h-2.5 w-2.5 rounded-full bg-[#27c93f]" /></span>
-        <span className="ml-2 text-white/90">{file}</span>
+    <div className={`overflow-hidden rounded-md border border-line bg-code text-[#e2dfd6] ${className}`}>
+      <div className="flex items-center gap-2 border-b border-line px-4 py-2.5 font-mono text-[11.5px] text-muted">
+        <span className="text-ink/90">{file}</span>
         {note && <span className="ml-auto truncate">{note}</span>}
       </div>
-      <pre className="overflow-x-auto py-4 font-mono text-[12.5px] leading-[1.75] sm:text-[13px]">
+      <pre className="overflow-x-auto py-4 font-mono text-[12.5px] leading-[1.75]">
         {lines.map((l, i) => (
           <div key={i} className="whitespace-pre pr-5">
-            <span className="inline-block w-10 select-none pr-4 text-right text-white/25">{i + 1}</span>
-            {highlight(l) }
+            <span className="inline-block w-10 select-none pr-4 text-right text-white/20">{i + 1}</span>
+            {highlight(l)}
           </div>
         ))}
       </pre>
