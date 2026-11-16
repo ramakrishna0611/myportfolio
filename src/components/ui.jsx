@@ -1,16 +1,16 @@
 import { motion } from 'motion/react'
 
-/* Side-view school bus. `wheel` is an optional motion value (degrees) that spins the wheels. */
-export function Bus({ className = '', wheel }) {
-  const W = ({ cx }) => (
-    <motion.g style={{ rotate: wheel, transformBox: 'fill-box', transformOrigin: 'center' }}>
+/* Side-view school bus drawn in a 124x62 box. `wheel` is an optional motion value (degrees) that spins the wheels. */
+export function BusShape({ wheel }) {
+  const wheelAt = cx => (
+    <motion.g key={cx} style={{ rotate: wheel, transformBox: 'fill-box', transformOrigin: 'center' }}>
       <circle cx={cx} cy="50" r="8.5" fill="#14151a" />
       <circle cx={cx} cy="50" r="3.6" fill="#d9d9d9" />
       <rect x={cx - 0.9} y="42.5" width="1.8" height="15" fill="#d9d9d9" />
     </motion.g>
   )
   return (
-    <svg viewBox="0 0 124 62" className={className} aria-hidden="true">
+    <>
       <rect x="3" y="7" width="114" height="40" rx="9" fill="#ffc21a" stroke="#14151a" strokeWidth="2.5" />
       {[12, 32, 52, 72].map(x => (
         <rect key={x} x={x} y="14" width="16" height="13" rx="2.5" fill="#cfe8ff" stroke="#14151a" strokeWidth="2" />
@@ -19,8 +19,16 @@ export function Bus({ className = '', wheel }) {
       <rect x="3" y="33" width="114" height="3.5" fill="#14151a" />
       <circle cx="113" cy="41" r="2.4" fill="#fff4bf" stroke="#14151a" strokeWidth="1.2" />
       <rect x="5" y="39" width="5" height="3" rx="1" fill="#ff5a4f" />
-      <W cx={28} />
-      <W cx={92} />
+      {wheelAt(28)}
+      {wheelAt(92)}
+    </>
+  )
+}
+
+export function Bus({ className = '', wheel }) {
+  return (
+    <svg viewBox="0 0 124 62" className={className} aria-hidden="true">
+      <BusShape wheel={wheel} />
     </svg>
   )
 }

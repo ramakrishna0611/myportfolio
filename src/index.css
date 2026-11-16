@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
+/* desktop screens that are short (e.g. 1366x768 laptops): keep the hero city above the fold */
+@custom-variant short (@media (min-width: 1024px) and (max-height: 820px));
 
 :root {
   --bg: #f7f6f2;
@@ -72,7 +74,29 @@ body {
 .tk-k { color: #c792ea } .tk-s { color: #c3e88d } .tk-c { color: #7f8597; font-style: italic }
 .tk-n { color: #f78c6c } .tk-f { color: #82aaff } .tk-b { color: #ffcb6b } .tk-o { color: #89ddff }
 
+/* ---- hero scene ---- */
+:root { --sky: #d6edff; --city-back: #b9cde3; --walk: #d9d4c7; --street: #2b2d33; --grass: #79c26b; --cloud: #ffffff; --win: #dff0ff; --win-lit: #dff0ff; --sun: #ffd23f; --star: transparent; --puff: #c9ccd3; }
+.dark { --sky: #0b1226; --city-back: #1b2440; --walk: #2a2f3a; --street: #1d2027; --grass: #24452a; --cloud: #27304d; --win: #2a3350; --win-lit: #ffd76a; --sun: #e9edf5; --star: #ffffff; --puff: #4a5060; }
+.hero-sky { background: linear-gradient(var(--sky), var(--bg)); }
+.scene-sun { fill: var(--sun); }
+.scene-moon-cut { fill: var(--sky); opacity: 0; }
+.dark .scene-moon-cut { opacity: 1; }
+.scene-star { fill: var(--star); }
+.scene-cloud { fill: var(--cloud); animation: cloud-drift linear infinite; }
+@keyframes cloud-drift { from { transform: translateX(-180px) } to { transform: translateX(1620px) } }
+.scene-back { fill: var(--city-back); }
+.scene-walk { fill: var(--walk); }
+.scene-road { fill: var(--street); }
+.scene-grass { fill: var(--grass); }
+.scene-puff { fill: var(--puff); }
+.win { fill: var(--win); }
+.win.lit { fill: var(--win-lit); }
+
+/* ---- winding road ---- */
+.road-base { stroke: var(--street); }
+.road-edge { stroke: color-mix(in srgb, var(--street) 30%, var(--bg)); }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .pipe-dot { animation: none; }
+  .pipe-dot, .scene-cloud { animation: none; }
 }

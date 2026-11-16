@@ -120,7 +120,7 @@ export function Education() {
 
 export function Contact() {
   return (
-    <Wrap id="contact" className="pb-40">
+    <Wrap id="contact" className="pb-16">
       <Reveal className="relative overflow-hidden rounded-[2rem] bg-ink px-6 py-14 text-center text-bg sm:px-12">
         <div className="mx-auto mb-6 w-28"><Bus className="w-full" /></div>
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-bg/60">Stop 07 · Final stop</p>

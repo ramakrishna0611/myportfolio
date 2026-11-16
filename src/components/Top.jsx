@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { profile, stops, experience, projects, certifications, education } from '../data.js'
 import { Bus, Button, CodeWindow, Icon } from './ui.jsx'
+import Scene from './Scene.jsx'
 
 export function Nav({ onRecruiter }) {
   const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'))
@@ -40,9 +41,8 @@ export function Nav({ onRecruiter }) {
 export function Hero() {
   const words = profile.name.split(' ')
   return (
-    <section id="about" className="relative overflow-hidden">
-      <div className="dots pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_top,black_30%,transparent_75%)]" />
-      <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 pb-20 pt-14 sm:px-6 sm:pt-20 lg:grid-cols-[1.1fr_.9fr]">
+    <section id="about" className="hero-sky relative flex flex-col overflow-hidden lg:min-h-[calc(100svh-4rem)]">
+      <div className="relative mx-auto grid w-full max-w-6xl flex-1 items-center gap-10 px-4 pb-6 pt-10 sm:px-6 lg:grid-cols-[1.25fr_.75fr] lg:py-8">
         <div className="min-w-0">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
             className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-sm text-muted">
@@ -50,7 +50,7 @@ export function Hero() {
             Open to AI Engineer roles · {profile.location}
           </motion.div>
 
-          <h1 className="mt-6 font-display text-[clamp(2.6rem,6.6vw,4.9rem)] font-extrabold leading-[0.98] tracking-tight text-ink">
+          <h1 className="mt-6 font-display text-[clamp(2.4rem,min(5vw,7.6vh),4.5rem)] font-extrabold leading-[0.98] tracking-tight text-ink">
             <span className="sr-only">{profile.name}</span>
             <span aria-hidden="true">
               {words.map((w, i) => (
@@ -67,42 +67,39 @@ export function Hero() {
             <p className="mt-5 inline-flex items-center gap-3 font-display text-2xl font-bold text-ink sm:text-3xl">
               <span className="rounded-lg bg-accent px-2.5 py-0.5 text-accent-ink">{profile.title}</span>
             </p>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink"><strong className="font-semibold">{profile.tagline}</strong> <span className="text-muted">{profile.bio}</span></p>
-            <p className="mt-4 font-mono text-[13px] text-muted">{profile.degree}</p>
+            <div className="-mx-4 mt-6 sm:-mx-6 lg:hidden"><Scene /></div>
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-ink sm:text-lg"><strong className="font-semibold">{profile.tagline}</strong> <span className="text-muted short:hidden">{profile.bio}</span></p>
+            <p className="mt-4 font-mono text-[13px] text-muted short:mt-2">{profile.degree}</p>
 
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-7 flex flex-wrap items-center gap-3">
               <Button href="#projects" variant="primary"><Icon.play />See live projects</Button>
               <Button href={profile.resume} variant="dark" download><Icon.down />Download resume</Button>
-              <Button href={profile.github}><Icon.github />GitHub</Button>
-              <Button href={profile.linkedin}><Icon.linkedin />LinkedIn</Button>
+              <Button href={profile.github} className="!h-11 !w-11 !p-0" aria-label="GitHub" title="GitHub"><Icon.github /></Button>
+              <Button href={profile.linkedin} className="!h-11 !w-11 !p-0" aria-label="LinkedIn" title="LinkedIn"><Icon.linkedin /></Button>
             </div>
           </motion.div>
         </div>
 
         <motion.div className="min-w-0" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}>
-          <CodeWindow className="hidden sm:block" file="about_me.py" note="main ✓" code={
+          <CodeWindow className="hidden sm:block short:hidden" file="about_me.py" note="main ✓" code={
 `class Engineer:
-    name   = "Abbidi Ramakrishna Reddy"
-    role   = "AI Engineer"
-    since  = 2025          # AI at Accelerize360
-    builds = ["agents", "RAG", "evals"]
-
-    def principles(self):
-        return [
-            "Rules live in code.",
-            "The model proposes.",
-            "Results get measured.",
-        ]`} />
-          <div className="grid grid-cols-2 gap-3 sm:mt-4 sm:grid-cols-4">
+    name  = "Abbidi Ramakrishna Reddy"
+    role  = "AI Engineer"
+    since = 2025   # AI at Accelerize360
+    motto = ["Rules live in code.",
+             "The model proposes.",
+             "Results get measured."]`} />
+          <div className="grid grid-cols-2 gap-3 sm:mt-4 short:mt-0">
             {profile.stats.map(s => (
-              <div key={s.label} className="rounded-2xl border border-line bg-surface p-3.5">
+              <div key={s.label} className="flex items-center gap-3 rounded-2xl border border-line bg-surface px-3.5 py-3">
                 <div className="font-display text-3xl font-bold text-ink">{s.value}</div>
-                <div className="mt-1 text-xs leading-snug text-muted">{s.label}</div>
+                <div className="text-xs leading-snug text-muted">{s.label}</div>
               </div>
             ))}
           </div>
         </motion.div>
       </div>
+      <div id="hero-scene" className="hidden lg:block"><Scene /></div>
     </section>
   )
 }
