@@ -1,49 +1,26 @@
 import { motion } from 'motion/react'
 
-/* Side-view school bus drawn in a 124x62 box. `wheel` is an optional motion value (degrees) that spins the wheels. */
-export function BusShape({ wheel }) {
-  const wheelAt = cx => (
-    <motion.g key={cx} style={{ rotate: wheel, transformBox: 'fill-box', transformOrigin: 'center' }}>
-      <circle cx={cx} cy="50" r="8.5" fill="#14151a" />
-      <circle cx={cx} cy="50" r="3.6" fill="#d9d9d9" />
-      <rect x={cx - 0.9} y="42.5" width="1.8" height="15" fill="#d9d9d9" />
-    </motion.g>
-  )
+export function SectionHeader({ n, code, title, sub }) {
   return (
-    <>
-      <rect x="3" y="7" width="114" height="40" rx="9" fill="#ffc21a" stroke="#14151a" strokeWidth="2.5" />
-      {[12, 32, 52, 72].map(x => (
-        <rect key={x} x={x} y="14" width="16" height="13" rx="2.5" fill="#cfe8ff" stroke="#14151a" strokeWidth="2" />
-      ))}
-      <rect x="93" y="14" width="18" height="17" rx="3" fill="#cfe8ff" stroke="#14151a" strokeWidth="2" />
-      <rect x="3" y="33" width="114" height="3.5" fill="#14151a" />
-      <circle cx="113" cy="41" r="2.4" fill="#fff4bf" stroke="#14151a" strokeWidth="1.2" />
-      <rect x="5" y="39" width="5" height="3" rx="1" fill="#ff5a4f" />
-      {wheelAt(28)}
-      {wheelAt(92)}
-    </>
-  )
-}
-
-export function Bus({ className = '', wheel }) {
-  return (
-    <svg viewBox="0 0 124 62" className={className} aria-hidden="true">
-      <BusShape wheel={wheel} />
-    </svg>
-  )
-}
-
-export function SectionHeader({ stop, title, kicker }) {
-  return (
-    <div className="mb-10">
-      <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.18em] text-muted">
-        <span className="inline-flex h-6 items-center rounded-full bg-accent px-2.5 font-semibold text-accent-ink">Stop {String(stop).padStart(2, '0')}</span>
-        <span className="h-px w-10 bg-line" />
-        <span>{kicker}</span>
+    <div className="mb-10 sm:mb-12">
+      <div className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.25em] text-cyan">
+        <span className="h-px w-8 bg-gradient-to-r from-transparent to-cyan" />
+        <span>{String(n).padStart(2, '0')} // {code}</span>
       </div>
-      <h2 className="mt-4 font-display text-4xl font-bold tracking-tight text-ink sm:text-5xl">{title}</h2>
+      <h2 className="mt-3 font-display text-4xl font-bold tracking-tight text-ink sm:text-5xl">{title}</h2>
+      {sub && <p className="mt-3 max-w-2xl text-muted">{sub}</p>}
     </div>
   )
+}
+
+/* HUD-style corner brackets; put inside an element with the "hud" class */
+export const Corners = () => (<><i className="c tl" /><i className="c tr" /><i className="c bl" /><i className="c br" /></>)
+
+/* Sets --mx/--my so the .spot border glow follows the mouse */
+export const spotlight = e => {
+  const r = e.currentTarget.getBoundingClientRect()
+  e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`)
+  e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`)
 }
 
 export function Reveal({ children, className = '', delay = 0, as = 'div' }) {
@@ -62,11 +39,11 @@ export function Reveal({ children, className = '', delay = 0, as = 'div' }) {
 }
 
 export function Button({ href, children, variant = 'ghost', className = '', ...rest }) {
-  const base = 'inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-link'
+  const base = 'inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan'
   const styles = {
-    primary: 'bg-accent text-accent-ink shadow-[0_2px_0_#14151a] hover:-translate-y-0.5 hover:shadow-[0_4px_0_#14151a] active:translate-y-0 active:shadow-none',
-    dark: 'bg-ink text-bg hover:opacity-90',
-    ghost: 'border border-line bg-surface text-ink hover:border-ink',
+    primary: 'bg-cyan text-[#04121a] shadow-[0_0_24px_rgba(77,225,255,.45)] hover:-translate-y-0.5 hover:shadow-[0_0_36px_rgba(77,225,255,.7)]',
+    light: 'bg-white text-[#05070f] hover:-translate-y-0.5 hover:bg-white/90',
+    ghost: 'border border-line bg-white/[.04] text-ink hover:border-cyan/60 hover:bg-cyan/10',
   }
   const external = href?.startsWith('http')
   return (
@@ -113,7 +90,7 @@ export function highlight(src) {
 export function CodeWindow({ file, code, note, className = '' }) {
   const lines = code.split('\n')
   return (
-    <div className={`overflow-hidden rounded-2xl border border-black/80 bg-code text-[#e8e9ee] shadow-[0_20px_50px_-24px_rgba(0,0,0,.55)] ${className}`}>
+    <div className={`overflow-hidden rounded-2xl border border-line bg-code/90 text-[#e8e9ee] shadow-[0_20px_60px_-24px_rgba(77,225,255,.25)] backdrop-blur ${className}`}>
       <div className="flex items-center gap-2 border-b border-white/10 px-4 py-2.5 font-mono text-xs text-white/60">
         <span className="flex gap-1.5"><i className="h-2.5 w-2.5 rounded-full bg-[#ff5f56]" /><i className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e]" /><i className="h-2.5 w-2.5 rounded-full bg-[#27c93f]" /></span>
         <span className="ml-2 text-white/90">{file}</span>

@@ -1,11 +1,14 @@
 # Portfolio: Abbidi Ramakrishna Reddy, AI Engineer
 
-A clean, recruiter-first portfolio. Its signature is a small yellow bus that drives along a road at the bottom of the screen to whichever section you're reading. Click any stop to jump to that section.
+A dark, space-station themed portfolio, built recruiter-first.
 
-- **Sections:** About → Experience → Skills → Projects → Certifications → Education → Contact.
-- **Recruiter mode:** a one-click, 30-second summary panel with the resume download.
-- **Projects:** each one has a screen recording of the live app, key metrics, and an expandable "How it works" section with an animated architecture flow and a code excerpt.
-- **Themes:** light by default, with a dark toggle. Animation is turned off when the visitor prefers reduced motion.
+- **Background:** a parallax starfield with shooting stars.
+- **Hero:** an AI core sending out pulse waves and light rays, with a rotating station wheel. The three project modules orbit around it; click one to jump to that project.
+- **Live transmissions:** screen recordings of both deployed apps, right under the hero.
+- **Sections:** Experience, Skills, Projects, Certifications, Education, Contact.
+- **Quick briefing:** a 30-second recruiter summary panel with the resume download.
+- **Projects:** each has a recording, key metrics, and an expandable "How it works" architecture flow with moving light packets and a code excerpt.
+- **Performance:** runs at 60 fps. Reduced-motion preferences are respected, and nothing uses heavy 3D libraries.
 
 Built with React, Vite, Tailwind CSS v4 and Motion.
 
