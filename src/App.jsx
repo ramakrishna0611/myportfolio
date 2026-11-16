@@ -8,10 +8,10 @@ import { ArrowButton } from './components/ui.jsx'
 
 const PAD = 'px-6 sm:px-[max(2.5rem,calc((100vw-80rem)/2+2.5rem))]'
 // directions (in the brain's own space) where each lobe label attaches: front, top, side, back
-const LOBE_DIRS = [[0, 0.2, 1], [0, 1, -0.1], [1, -0.45, 0.15], [0, 0.15, -1]]
+const LOBE_DIRS = [[0, 0.2, -1], [0, 1, 0.2], [0.5, -0.6, -0.65], [0, 0.15, 1]]
 
 /* Leader lines from each lobe on the 3D brain to its label, drawn every frame. */
-function LobeLines({ dots, labels }) {
+function LobeLines({ dots, labels, overlay }) {
   const svgRef = useRef(null)
   useEffect(() => {
     let f = 0
@@ -23,18 +23,19 @@ function LobeLines({ dots, labels }) {
       const r = head.getBoundingClientRect(), vh = window.innerHeight
       const vis = Math.min(1, Math.max(0, Math.min((vh * 0.75 - r.top) / (vh * 0.4), (r.bottom - vh * 0.6) / (vh * 0.4))))
       svg.style.opacity = vis
+      if (overlay.current) overlay.current.style.opacity = vis
       dots.current.forEach(d => d && (d.style.opacity = vis)) // dots only while the labels are up
       dots.current.forEach((d, i) => {
         const line = svg.children[i], lab = labels.current[i]
         if (!d || !lab || !line) return
-        const lr = lab.getBoundingClientRect()
+        const lr = lab.getBoundingClientRect(), leftSide = lr.right < window.innerWidth / 2
         line.setAttribute('x1', d.dataset.x || 0); line.setAttribute('y1', d.dataset.y || 0)
-        line.setAttribute('x2', lr.left - 12); line.setAttribute('y2', lr.top + 10)
+        line.setAttribute('x2', leftSide ? lr.right + 12 : lr.left - 12); line.setAttribute('y2', lr.top + 10)
       })
     }
     f = requestAnimationFrame(draw)
     return () => cancelAnimationFrame(f)
-  }, [dots, labels])
+  }, [dots, labels, overlay])
   return (
     <svg ref={svgRef} className="pointer-events-none fixed inset-0 z-[3] hidden h-full w-full md:block" style={{ opacity: 0 }} aria-hidden="true">
       {lobes.map(l => <line key={l.n} stroke="rgba(232,228,218,.55)" strokeWidth="1" />)}
@@ -42,10 +43,18 @@ function LobeLines({ dots, labels }) {
   )
 }
 
+const LobeLabel = ({ l, small, ref }) => (
+  <li ref={ref}>
+    <div className={`font-mono text-[#7d97ff] ${small ? 'text-[10.5px]' : 'text-[11.5px]'}`}>{l.n} &nbsp;{l.lobe}</div>
+    <div className={`mt-1 font-serif leading-tight ${small ? 'text-[19px]' : 'text-[27px]'}`}>{l.title}</div>
+    <div className={`text-ink/65 ${small ? 'text-[12.5px] leading-snug' : 'mt-0.5 text-[14px]'}`}>{l.items}</div>
+  </li>
+)
+
 export default function App() {
   const [plain, setPlain] = useState(false)
   const [active, setActive] = useState(-1)
-  const lobeDots = useRef([]), lobeLabels = useRef([]), nodeTags = useRef([])
+  const lobeDots = useRef([]), lobeLabels = useRef([]), nodeTags = useRef([]), lobeOverlay = useRef(null)
   const labelRefs = useRef({ lobeDots: lobeDots.current, nodeTags: nodeTags.current })
 
   return (
@@ -66,44 +75,47 @@ export default function App() {
           </span>
         ))}
       </div>
-      <LobeLines dots={lobeDots} labels={lobeLabels} />
+      <LobeLines dots={lobeDots} labels={lobeLabels} overlay={lobeOverlay} />
+
+      {/* skills on the lobes: fixed beside the brain, fading in and out rather than scrolling away */}
+      <div ref={lobeOverlay} className="pointer-events-none fixed inset-0 z-[4]" style={{ opacity: 0 }}>
+        <div className="absolute inset-x-0 top-[92px] px-6 text-center md:top-[104px]">
+          <h2 className="font-serif text-[clamp(2.4rem,5vw,4rem)] font-normal leading-none tracking-[-0.02em]">Inside my head</h2>
+          <p className="mt-2 text-[15px] text-ink/70">Everything I learn has a place. Keep scrolling and we go in.</p>
+        </div>
+        {[[0, 1], [2, 3]].map((pair, side) => (
+          <ol key={side} className={`absolute top-1/2 hidden w-[min(300px,26vw)] -translate-y-1/2 space-y-14 md:block ${side ? 'right-[max(2.5rem,calc((100vw-80rem)/2+2.5rem))]' : 'left-[max(2.5rem,calc((100vw-80rem)/2+2.5rem))] text-right'}`}>
+            {pair.map(i => <LobeLabel key={i} l={lobes[i]} ref={el => (lobeLabels.current[i] = el)} />)}
+          </ol>
+        ))}
+        <ol className="absolute inset-x-0 bottom-6 grid grid-cols-2 gap-x-5 gap-y-4 px-6 md:hidden">
+          {lobes.map(l => <LobeLabel key={l.n} l={l} small />)}
+        </ol>
+      </div>
 
       <main className="relative z-[2]">
         {/* 1. the hook, with the brain turning beside it */}
-        <section id="hero" className={`flex min-h-[100svh] items-end pb-[22svh] md:items-center md:pb-0 ${PAD}`}>
-          <div className="max-w-[640px]">
+        <section id="hero" className={`flex min-h-[100svh] flex-col items-center pt-[15svh] text-center md:pt-[13svh] ${PAD}`}>
+          <div className="max-w-[860px]">
             <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-              className="font-serif text-[clamp(2.7rem,6vw,5.4rem)] font-medium leading-[0.98] tracking-[-0.025em]">
+              className="font-serif text-[clamp(2.6rem,5.6vw,5rem)] font-normal leading-[0.98] tracking-[-0.025em]">
               I teach AI to follow the rules.
             </motion.h1>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45, duration: 0.8 }}>
-              <p className="mt-7 text-[18px] leading-relaxed text-ink/90">I’m {profile.name}, an AI Engineer at Accelerize360 building LLM agents and RAG systems.</p>
-              <p className="mt-3 text-[18px] leading-relaxed text-ink/90">The model can propose. My code decides. The numbers prove it.</p>
-              <div className="mt-9 flex flex-wrap items-center gap-6">
+              <p className="mx-auto mt-5 max-w-[620px] text-[16.5px] leading-relaxed text-ink/75">
+                I’m {profile.name}, an AI Engineer at Accelerize360 building LLM agents and RAG systems. The model can propose. My code decides. The numbers prove it.
+              </p>
+              <div className="mt-7 flex flex-wrap items-center justify-center gap-6">
                 <ArrowButton href="#head">Look inside my head</ArrowButton>
-                <span className="hidden font-mono text-[12.5px] text-muted sm:inline">Scroll to travel through it.</span>
+                <span className="hidden font-mono text-[12.5px] text-muted sm:inline">or scroll to travel through it</span>
               </div>
             </motion.div>
           </div>
         </section>
 
-        {/* 2. skills on the lobes */}
-        <section id="head" className="relative h-[190vh]">
-          <div className={`sticky top-0 flex h-[100svh] flex-col justify-between pb-10 pt-28 ${PAD}`}>
-            <div>
-              <h2 className="font-serif text-[clamp(2.4rem,5vw,4rem)] font-medium leading-none tracking-[-0.02em]">Inside my head</h2>
-              <p className="mt-3 max-w-md text-[17px] text-ink/85">Everything I learn has a place. Keep scrolling and we go in.</p>
-            </div>
-            <ol className="space-y-6 md:absolute md:right-[max(2.5rem,calc((100vw-80rem)/2+2.5rem))] md:top-1/2 md:w-[340px] md:-translate-y-1/2">
-              {lobes.map((l, i) => (
-                <li key={l.n} ref={el => (lobeLabels.current[i] = el)}>
-                  <div className="font-mono text-[11.5px] text-[#7d97ff]">{l.n} &nbsp;{l.lobe}</div>
-                  <div className="mt-1 text-[22px] font-medium leading-tight">{l.title}</div>
-                  <div className="text-[14.5px] text-ink/70">{l.items}</div>
-                </li>
-              ))}
-            </ol>
-          </div>
+        {/* 2. skills on the lobes (the labels live in the fixed overlay above; this is the scroll distance) */}
+        <section id="head" className="relative h-[190vh]" aria-label="Skills by lobe">
+          <ul className="sr-only">{lobes.map(l => <li key={l.n}>{l.title}: {l.items}</li>)}</ul>
         </section>
 
         {/* 3. the dive */}

@@ -12,7 +12,7 @@ export function Header({ onPlain }) {
   return (
     <header className={`fixed inset-x-0 top-0 z-50 bg-gradient-to-b from-bg via-bg/85 to-transparent pb-5 pt-5 ${PAD}`}>
       <div className="flex items-center gap-4">
-        <a href="#hero" className="font-serif text-[17px] font-semibold tracking-tight">{profile.name}</a>
+        <a href="#hero" className="font-serif text-[21px] font-normal tracking-[-0.01em]">{profile.name}</a>
         <span className="ml-auto hidden font-mono text-[12.5px] text-ink/80 sm:inline" aria-live="off">
           {pct >= 99 ? 'Trained. Ready to ship.' : <>Training <span className="inline-block w-[3ch] text-right text-ink">{pct}%</span></>}
         </span>
@@ -46,7 +46,7 @@ export function PlainCV({ open, onClose }) {
               <span>Plain CV · 30-second read</span>
               <button onClick={onClose} autoFocus className="inline-flex items-center gap-1.5 hover:text-ink">Back to the story <Icon.close /></button>
             </div>
-            <h1 className="mt-10 font-serif text-5xl font-medium tracking-tight">{profile.name}</h1>
+            <h1 className="mt-10 font-serif text-5xl font-normal tracking-tight">{profile.name}</h1>
             <p className="mt-2 text-xl text-ink/85">{profile.title} · {profile.location}</p>
             <p className="mt-5 text-[17px] leading-relaxed text-ink/75">{profile.tagline} {profile.bio}</p>
             <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 font-mono text-[13px]">

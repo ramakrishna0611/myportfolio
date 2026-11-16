@@ -177,7 +177,7 @@ export default function Brain({ onNode, lobeAnchors, labelRefs }) {
       const w = window.innerWidth, h = window.innerHeight
       renderer.setSize(w, h, false)
       camera.aspect = w / h; camera.fov = w < 768 ? 48 : 35; camera.updateProjectionMatrix()
-      heroCam.set(0, 0.4, w < 768 ? 17 : 13)
+      heroCam.set(0, 0.4, w < 768 ? 18 : 14.5)
       measure()
     }
     const heroCam = new THREE.Vector3(0, 0.4, 13), heroLook = new THREE.Vector3(0, 0, 0)
@@ -192,7 +192,7 @@ export default function Brain({ onNode, lobeAnchors, labelRefs }) {
       outPos.copy(p).addScaledVector(tan, -5.8).addScaledVector(up, 1.7).addScaledVector(side, 1.5)
       outLook.copy(net.path.getPoint(clamp(t + 0.015)))
     }
-    let tCur = 0, lastNode = -2, frame = 0, offX = 0, offY = 0
+    let tCur = 0, lastNode = -2, frame = 0, offX = 0, offY = 0, rot = 0
     const startPos = new THREE.Vector3(), startLook = new THREE.Vector3()
     pathPose(0, startPos, startLook)
     const K = nodes.length
@@ -211,8 +211,11 @@ export default function Brain({ onNode, lobeAnchors, labelRefs }) {
       tCur += (tTarget - tCur) * 0.09
 
       // brain: rotates in the opening, swells and dissolves as we dive in
-      const spin = now * 0.00012 + headP * 1.4
-      brainRoot.rotation.set(0.12, spin, 0)
+      // free spin on the cover; side-on and nearly still while the lobe labels are up
+      const SIDE = Math.PI / 2
+      if (headP < 0.05 && diveP <= 0) rot += 0.0035
+      else { const target = SIDE + (headP - 0.5) * 0.35, near = target + Math.PI * 2 * Math.round((rot - target) / (Math.PI * 2)); rot += (near - rot) * 0.05 }
+      brainRoot.rotation.set(0.12, rot, 0)
       const dissolve = clamp((diveP - 0.3) / 0.5)
       brainRoot.scale.setScalar(1 + ease(clamp(diveP / 0.85)) * 1.6)
       brainMats.forEach(m => { m.opacity = 1 - dissolve; m.depthWrite = dissolve < 0.5 })
@@ -245,9 +248,10 @@ export default function Brain({ onNode, lobeAnchors, labelRefs }) {
       camera.position.lerp(camPos, 0.12)
       camera.lookAt(look)
 
-      // shift the picture so the brain sits right of the copy, then left of the info panel
-      const tx = w < 768 ? 0 : headP < 0.05 && diveP <= 0 ? -0.2 : diveP < 0.5 ? 0.16 : 0.14
-      const ty = w < 768 ? (diveP > 0.5 ? 0.2 : headP > 0.05 ? 0.13 : 0.27) : 0 // phones: brain and nodes sit in the top half, text below
+      // shift the picture: brain centred under the copy, centred between the lobe labels, then left of the info panel
+      const cover = headP < 0.05 && diveP <= 0
+      const tx = w < 768 || diveP <= 0 ? 0 : diveP < 0.5 ? 0.16 : 0.14
+      const ty = w < 768 ? (cover ? -0.19 : diveP > 0.5 ? 0.2 : 0.02) : (cover ? -0.21 : diveP > 0 ? 0 : -0.03)
       offX += (tx - offX) * 0.06; offY += (ty - offY) * 0.06
       camera.setViewOffset(w, vh, w * offX, vh * offY, w, vh)
       camera.updateProjectionMatrix()

@@ -4,7 +4,7 @@ import { motion } from 'motion/react'
 export function ChapterTitle({ title, line, className = '' }) {
   return (
     <div className={className}>
-      <h2 className="font-serif text-[clamp(2.4rem,5vw,4rem)] font-medium leading-[1.02] tracking-[-0.02em] text-ink">{title}</h2>
+      <h2 className="font-serif text-[clamp(2.4rem,5vw,4rem)] font-normal leading-[1.02] tracking-[-0.02em] text-ink">{title}</h2>
       {line && <p className="mt-3 max-w-xl text-[17px] text-ink/85">{line}</p>}
     </div>
   )
@@ -51,6 +51,7 @@ export const Icon = {
   bolt: p => <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4" {...p}><path d="M11 1 3 12h6l-1 7 8-11h-6z" /></svg>,
   sun: p => <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-4 w-4" {...p}><circle cx="10" cy="10" r="3.5" /><path d="M10 1.5v2M10 16.5v2M1.5 10h2M16.5 10h2M4 4l1.4 1.4M14.6 14.6 16 16M4 16l1.4-1.4M14.6 5.4 16 4" /></svg>,
   moon: p => <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4" {...p}><path d="M15.5 12.8A6.5 6.5 0 0 1 7.2 4.5a6.5 6.5 0 1 0 8.3 8.3z" /></svg>,
+  globe: p => <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" className="h-4 w-4" {...p}><circle cx="10" cy="10" r="7.5" /><path d="M2.5 10h15M10 2.5c2.2 2.2 3 4.7 3 7.5s-.8 5.3-3 7.5c-2.2-2.2-3-4.7-3-7.5s.8-5.3 3-7.5z" /></svg>,
   close: p => <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5" {...p}><path d="M5 5l10 10M15 5 5 15" /></svg>,
   check: p => <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2.4" className="h-3.5 w-3.5" {...p}><path d="M4 10.5l4 4 8-9" /></svg>,
   award: p => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-6 w-6" {...p}><circle cx="12" cy="9" r="6" /><path d="M8.5 14 7 22l5-3 5 3-1.5-8" /></svg>,

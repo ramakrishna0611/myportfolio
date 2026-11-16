@@ -12,7 +12,7 @@ function Clip({ src, poster, label }) {
     v.play()?.catch(() => { v.controls = true })
   }, [src])
   return (
-    <div className="overflow-hidden rounded-md border border-line">
+    <div className="overflow-hidden">
       <video ref={ref} key={src} muted loop playsInline autoPlay preload="auto" poster={poster} aria-label={label} className="block aspect-[16/10] w-full bg-[#0b0c0e] object-cover object-top">
         <source src={src} type="video/mp4" />
       </video>
@@ -22,7 +22,7 @@ function Clip({ src, poster, label }) {
 
 const Metric = ({ value, label, color }) => (
   <div className="border-t border-line pt-2.5">
-    <div className="font-serif text-[1.65rem] font-medium leading-none" style={{ color }}>{value}</div>
+    <div className="font-serif text-[1.8rem] font-normal leading-none" style={{ color }}>{value}</div>
     <div className="mt-1.5 text-[12.5px] leading-snug text-ink/65">{label}</div>
   </div>
 )
@@ -76,21 +76,31 @@ function Experience() {
   )
 }
 
+const Pill = ({ children, className }) => (
+  <span className={`inline-flex items-center gap-1.5 rounded-[4px] border px-2 py-[2px] font-mono text-[9.5px] font-bold uppercase tracking-[0.05em] backdrop-blur-sm ${className}`}>{children}</span>
+)
+
+/* Project card: framed media, name and year, a short description, tech chips, icon links */
 function Project({ p }) {
   const [copied, setCopied] = useState(null)
   return (
-    <>
-      <p className="text-[15.5px] text-ink/90">{p.tagline}</p>
-      <div className="mt-4">
+    <article className="rounded-xl border border-line bg-white/[0.02] p-3">
+      <div className="relative overflow-hidden rounded-lg border border-line bg-[repeating-linear-gradient(135deg,rgba(232,228,218,.035)_0_1px,transparent_1px_7px)] pl-8 pt-11">
+        <div className="absolute inset-x-3 top-3 flex justify-between">
+          <Pill className={p.live ? 'border-[#74d8c4]/30 bg-[#74d8c4]/10 text-[#74d8c4]' : 'border-line bg-ink/5 text-ink/60'}>
+            <span className={`h-1.5 w-1.5 rounded-full ${p.live ? 'animate-pulse bg-[#74d8c4]' : 'bg-ink/40'}`} />{p.live ? 'Live' : 'Repo'}
+          </Pill>
+          <Pill className="border-[#e2c26c]/35 bg-[#e2c26c]/10 text-[#e2c26c]">Featured</Pill>
+        </div>
         {p.video
-          ? <Clip src={p.video} poster={p.poster} label={`10-second recording of ${p.name}`} />
+          ? <div className="overflow-hidden rounded-tl-md border-l border-t border-line"><Clip src={p.video} poster={p.poster} label={`10-second recording of ${p.name}`} /></div>
           : (
-            <div className="rounded-md border border-line p-4">
-              <div className="text-[14px] font-medium">Answer found in the top 4 retrieved chunks</div>
-              <div className="mt-3 space-y-3">
+            <div className="rounded-tl-md border-l border-t border-line bg-[#0b0c0e] p-4">
+              <div className="text-[13px] font-medium">Answer found in the top 4 retrieved chunks</div>
+              <div className="mt-3 space-y-2.5">
                 {p.bars.map(([l, v], i) => (
                   <div key={l}>
-                    <div className="mb-1 flex justify-between text-[12.5px]"><span className="text-ink/70">{l}</span><span className="font-mono">{v}%</span></div>
+                    <div className="mb-1 flex justify-between text-[12px]"><span className="text-ink/65">{l}</span><span className="font-mono">{v}%</span></div>
                     <div className="h-[3px] bg-line"><motion.div className="h-full" style={{ background: i === p.bars.length - 1 ? '#74d8c4' : 'rgba(232,228,218,.45)' }} initial={{ width: 0 }} animate={{ width: `${v}%` }} transition={{ duration: 0.9, delay: 0.2 + i * 0.15 }} /></div>
                   </div>
                 ))}
@@ -98,25 +108,41 @@ function Project({ p }) {
             </div>
           )}
       </div>
-      <div className="mt-5 grid grid-cols-2 gap-x-6 gap-y-4">
-        {p.metrics.map(m => <Metric key={m.label} value={m.value} label={m.label} color="#74d8c4" />)}
-      </div>
-      <p className="mt-5 text-[13.5px] leading-relaxed text-ink/65">{p.summary}</p>
-      <div className="mt-5 flex flex-wrap items-center gap-5">
-        {p.live && <ArrowButton href={p.live} tip="↗">Try it live</ArrowButton>}
-        <TextLink href={p.code}><Icon.github />Code</TextLink>
-      </div>
-      {p.login && (
-        <div className="mt-4 font-mono text-[11.5px] text-ink/60">
-          Demo login (click to copy):{' '}
-          {p.login.map(([k, v]) => (
-            <button key={k} className="mr-2 underline decoration-line underline-offset-4 hover:text-ink" onClick={() => navigator.clipboard?.writeText(v).then(() => { setCopied(v); setTimeout(() => setCopied(null), 1200) })}>
-              {copied === v ? 'copied ✓' : v}
-            </button>
-          ))}
+
+      <div className="px-1.5 pb-1.5">
+        <div className="mt-4 flex items-baseline justify-between gap-3">
+          <h3 className="text-[17px] font-semibold tracking-[0.02em]">{p.name}</h3>
+          <span className="font-mono text-[12px] text-muted">2026</span>
         </div>
-      )}
-    </>
+        <p className="mt-0.5 font-mono text-[11px] text-[#74d8c4]">{p.kind}</p>
+        <p className="mt-2.5 text-[13.5px] leading-[1.6] text-ink/70">{p.tagline} {p.summary}</p>
+
+        <div className="mt-4 grid grid-cols-2 gap-x-5 gap-y-3">
+          {p.metrics.map(m => <Metric key={m.label} value={m.value} label={m.label} color="#74d8c4" />)}
+        </div>
+
+        <div className="mt-4 flex items-end gap-4 border-t border-line pt-4">
+          <div className="flex flex-1 flex-wrap gap-1.5">
+            {p.stack.map(t => <span key={t} className="rounded-[4px] border border-line px-2 py-[3px] font-mono text-[11px] text-ink/70">{t}</span>)}
+          </div>
+          <div className="flex shrink-0 items-center gap-3 pb-1 text-ink/60">
+            {p.live && <a href={p.live} target="_blank" rel="noopener" aria-label={`${p.name} live demo`} title="Live demo" className="transition hover:text-ink"><Icon.globe className="h-[18px] w-[18px]" /></a>}
+            <a href={p.code} target="_blank" rel="noopener" aria-label={`${p.name} source code`} title="Source code" className="transition hover:text-ink"><Icon.github className="h-[18px] w-[18px]" /></a>
+          </div>
+        </div>
+
+        {p.login && (
+          <div className="mt-3 font-mono text-[11px] leading-relaxed text-ink/55">
+            Demo login (click to copy):{' '}
+            {p.login.map(([k, v]) => (
+              <button key={k} className="mr-2 underline decoration-line underline-offset-4 hover:text-ink" onClick={() => navigator.clipboard?.writeText(v).then(() => { setCopied(v); setTimeout(() => setCopied(null), 1200) })}>
+                {copied === v ? 'copied ✓' : v}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </article>
   )
 }
 
@@ -171,7 +197,7 @@ export default function NodePanel({ active }) {
               <span className="text-[#74d8c4]">Neuron {String(active + 1).padStart(2, '0')} / {String(nodes.length).padStart(2, '0')}</span>
               <span className="text-muted">{n.kind}</span>
             </div>
-            <h2 className="mt-2 font-serif text-[2rem] font-medium leading-tight tracking-[-0.01em]">{project ? project.name : TITLES[n.id]}</h2>
+            <h2 className="mt-2 font-serif text-[2.1rem] font-normal leading-tight tracking-[-0.01em]">{project ? 'Projects' : TITLES[n.id]}</h2>
             <div className="mt-4">{project ? <Project p={project} /> : <Body />}</div>
             <div className="mt-6 flex gap-1" aria-hidden="true">
               {nodes.map((x, i) => <span key={x.id} className={`h-[3px] flex-1 rounded-full ${i <= active ? 'bg-[#74d8c4]' : 'bg-line'}`} />)}
