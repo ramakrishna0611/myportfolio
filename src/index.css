@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg: #fafaf9;
+  --ink: #0a0a0a;
+  --muted: #525252;
+  --faint: #8a8a8a;
+  --line: rgba(10, 10, 10, 0.09);
+  --card: #f4f4f3;
+  --raised: #ffffff;
+  --grid: rgba(10, 10, 10, 0.05);
+  color-scheme: light;
+}
+.dark {
+  --bg: #0b0b0c;
+  --ink: #f5f5f4;
+  --muted: #a8a8a6;
+  --faint: #73736f;
+  --line: rgba(245, 245, 244, 0.1);
+  --card: #141415;
+  --raised: #1a1a1c;
+  --grid: rgba(245, 245, 244, 0.045);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-line: var(--line);
+  --color-card: var(--card);
+  --color-raised: var(--raised);
+  --color-live: #16a34a;
+  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+  --font-serif: "Instrument Serif", Georgia, serif;
+}
+
+html { scroll-behavior: smooth; scroll-padding-top: 96px; overflow-x: clip; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+  transition: background-color .3s, color .3s;
+}
+::selection { background: var(--ink); color: var(--bg); }
+
+/* faint square grid behind the hero, fading out at the edges */
+.hero-grid {
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 75% 70% at 50% 35%, #000 30%, transparent 75%);
+}
+
+/* serif italic accent inside headings */
+.accent { font-family: var(--font-serif); font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
+
+.label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; }
+
+@keyframes marquee { to { transform: translateX(-50%); } }
+.marquee { animation: marquee 45s linear infinite; }
+.marquee:hover { animation-play-state: paused; }
+
+@keyframes blink { 50% { opacity: 0; } }
+.caret { animation: blink 1s step-end infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .marquee, .caret { animation: none; }
+}
