@@ -8,7 +8,7 @@ export const profile = {
   location: 'Hyderabad, India',
   email: 'abbidiramakrishnareddy@gmail.com',
   github: 'https://github.com/ramakrishna0611',
-  linkedin: 'https://www.linkedin.com/in/RamakrishnaReddyAbbidi',
+  linkedin: 'https://www.linkedin.com/in/ramakrishna-reddy-abbidi-3958b425b',
   resume: '/assets/Abbidi_Ramakrishna_Reddy_Resume.pdf',
 }
 
