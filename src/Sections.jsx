@@ -227,7 +227,7 @@ export function Skills() {
     <Section id="skills">
       <SectionHead n="04" label="Skills" title="Tools I" accent="reach for."
         note="Mostly Python and the LLM toolkit around it, plus enough front end and Salesforce to ship the whole thing myself." />
-      <div className="mt-14 grid gap-5 sm:grid-cols-2">
+      <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {skills.map((g, i) => (
           <Reveal key={g.name} delay={i * 0.06} className="rounded-[28px] border border-line bg-card p-7 sm:p-8">
             <div className="label text-faint">{g.items.length} tools</div>

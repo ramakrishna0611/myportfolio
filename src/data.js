@@ -22,7 +22,7 @@ export const hero = {
   ],
 }
 
-export const marquee = ['Python', 'LLM agents', 'Tool calling', 'RAG', 'ChromaDB', 'BM25', 'Cross-encoders', 'FastAPI', 'SQLAlchemy', 'Groq', 'Gemini', 'Agentforce', 'Data Cloud', 'Prompt Builder', 'Gmail API', 'JavaScript', 'React', 'SQL', 'Git', 'Render', 'Vercel']
+export const marquee = ['Python', 'LLM agents', 'LangChain', 'LangGraph', 'Tool calling', 'RAG', 'MCP', 'ChromaDB', 'BM25', 'Cross-encoders', 'FastAPI', 'SQLAlchemy', 'Groq', 'Gemini', 'Agentforce', 'Data Cloud', 'Prompt Builder', 'Gmail API', 'JavaScript', 'React', 'SQL', 'Git', 'Render', 'Vercel']
 
 export const about = {
   paras: [
@@ -58,10 +58,12 @@ export const job = {
 }
 
 export const skills = [
-  { name: 'LLM engineering', items: ['AI agents', 'Tool calling', 'RAG', 'Embeddings', 'Hybrid search (BM25)', 'Reranking', 'LLM evaluation', 'Guardrails', 'Prompt-injection testing'] },
-  { name: 'Languages & data', items: ['Python', 'SQL', 'JavaScript', 'SQLAlchemy', 'ChromaDB', 'Pandas', 'NumPy'] },
-  { name: 'Building & shipping', items: ['FastAPI', 'REST APIs', 'Gmail API', 'React', 'pytest', 'Git & GitHub', 'Render', 'Vercel'] },
-  { name: 'AI platforms', items: ['Agentforce', 'Data Cloud', 'Prompt Builder', 'Einstein Trust Layer', 'Groq', 'Gemini'] },
+  { name: 'LLM engineering', items: ['AI agents', 'Multi-agent systems', 'Tool calling', 'MCP', 'Structured outputs', 'RAG', 'Embeddings', 'Hybrid search (BM25)', 'Reranking', 'Prompt engineering', 'LLM evaluation', 'Guardrails', 'Prompt-injection testing'] },
+  { name: 'Frameworks & models', items: ['LangChain', 'LangGraph', 'LlamaIndex', 'Hugging Face', 'OpenAI API', 'Claude API', 'Gemini', 'Groq', 'Ollama'] },
+  { name: 'Vector search', items: ['ChromaDB', 'FAISS', 'Pinecone', 'pgvector', 'sentence-transformers', 'Cross-encoders'] },
+  { name: 'Languages & data', items: ['Python', 'SQL', 'JavaScript', 'SQLAlchemy', 'Pandas', 'NumPy'] },
+  { name: 'Building & shipping', items: ['FastAPI', 'REST APIs', 'Streamlit', 'Docker', 'React', 'Gmail API', 'pytest', 'LangSmith', 'Git & GitHub', 'Render', 'Vercel'] },
+  { name: 'AI platforms', items: ['Agentforce', 'Data Cloud', 'Prompt Builder', 'Einstein Trust Layer'] },
 ]
 
 export const projectMeta = {
